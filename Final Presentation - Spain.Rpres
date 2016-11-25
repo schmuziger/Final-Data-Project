@@ -1,0 +1,32 @@
+Final Presentation - Spain
+========================================================
+author: Rita Alvarez and Rafael Goldzweig
+date: 02.12.2016
+autosize: true
+
+First Slide
+========================================================
+
+For more details on authoring R presentations please visit <https://support.rstudio.com/hc/en-us/articles/200486468>.
+
+- What is your research question? Why is it interesting?
+
+- What data did you gather/methods did you use?
+
+- What are your results? How do you plan to present these?
+
+- What issue do you still have/questions you want to ask?
+
+Slide With Code
+========================================================
+
+```{r}
+summary(cars)
+```
+
+Slide With Plot
+========================================================
+
+```{r, echo=FALSE}
+plot(cars)
+```
