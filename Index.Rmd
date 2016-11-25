@@ -2,7 +2,7 @@
 title: "Assignment 3 - Dataset creation and Analysis"
 author: "Rita Alvarez and Rafael Schmuziger"
 date: "November 11, 2016"
-output: pdf_document
+output: html_document
 ---
 
 ```{r options, include=FALSE, echo=FALSE}
