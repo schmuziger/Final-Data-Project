@@ -1,6 +1,6 @@
 Final Presentation - Spain
 ========================================================
-author: Rita Alvarez and Rafael Goldzweig
+author: Rita Alvarez Martinez and Rafael Goldzweig
 date: 02.12.2016
 autosize: true
 
