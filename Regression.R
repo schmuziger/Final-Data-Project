@@ -1,0 +1,13 @@
+install.packages("magrittr")
+install.packages("rvest")
+install.packages("dplyr")
+install.packages("XML")
+install.packages("xlsx")
+install.packages("scales")
+library(xlsx)
+library(rvest)
+library(magrittr)
+library(dplyr)
+library(XML)
+library(scales)
+
