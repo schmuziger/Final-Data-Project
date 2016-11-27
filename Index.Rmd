@@ -30,7 +30,7 @@ library(stargazer)
 ```
 
 ```{r set wd, message=FALSE, echo=FALSE, include=FALSE}
-setwd('C:/Users/Schmuziger/Desktop/Assignment-3')
+setwd('C:/Users/Schmuziger/Desktop/Final-Data-Project')
 ```
 
 ```{r turnout data, results='asis', tidy=TRUE, echo=FALSE}
@@ -108,7 +108,7 @@ ggplot(data=Spain_data, aes(x=Year, y=Unempl_rate_20_24, group = Region, colour 
 
 ## Unemployment and turnout
 
-Spain_data["Mean_Unemp_Rate_less25"] <- NA 
+Spain_data["Mean_Unemp_Rate_less25"] <- NA
 
 Spain_data <- within(Spain_data, est[b==0] <- (a[b==0]-5)/2.533)
 
@@ -119,13 +119,13 @@ plot(Spain_data$Unempl_rate_total, Spain_data$turnout)
 
 # Add aesthetic mappings
 
-p <- ggplot(Spain_data, aes(Turnout, Unempl_rate_less25))
+p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
 p + geom_point()
 p1<-p + geom_point(aes(colour = Region)) 
-p3 <- p1 + labs(y="Youth Unemployment", x= "Turnout")
-p5 <- p3 + scale_y_continuous("Youth Unemployment",
-                              limits=c(10,85),
-                              breaks=seq(10, 85, 10))
+p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
+p5 <- p3 + scale_y_continuous("Turnout",
+                              limits=c(0.4,0.85),
+                              breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(colour = Region), se = FALSE)
 p5
 
 p6<-p5 + theme(axis.text.x = element_blank())

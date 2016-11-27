@@ -4,18 +4,25 @@ author: Rita Alvarez and Rafael Goldzweig
 date: 02.12.2016
 autosize: true
 
-First Slide
+- What is your research question? Why is it interesting?
 ========================================================
 
-For more details on authoring R presentations please visit <https://support.rstudio.com/hc/en-us/articles/200486468>.
+We want to check whether high levels of youth unemployment lead to a higher turnout in the General Elections in Spain. We rely the existing theoretical background that relates economic and social factors to voter behavior, in which unemployment appears in many cases as influencing people´s decision to vote. In the case of Spain, we believe that this is specially interesting because of the extremely high levels of unemployment during the economic crisis.
 
-- What is your research question? Why is it interesting?
+autosize: true
+========================================================
 
 - What data did you gather/methods did you use?
 
+========================================================
+
 - What are your results? How do you plan to present these?
 
+========================================================
+
 - What issue do you still have/questions you want to ask?
+
+========================================================
 
 Slide With Code
 ========================================================
