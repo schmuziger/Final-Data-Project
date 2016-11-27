@@ -27,13 +27,12 @@ library(readxl)
 library(ggplot2)
 library(pastecs)
 library(stargazer)
+library(gplots)
 ```
 
 
 ```{r set wd, message=FALSE, echo=FALSE, include=FALSE}
 setwd('C:/Users/Rita/Desktop/Final-Data-Project')
-
-rm(list=ls())
 ```
 
 ```{r turnout data, results='asis', tidy=TRUE, echo=FALSE}
@@ -63,6 +62,8 @@ Spain_data <- Spain_data[, -c(7,7)]
 Spain_data["Rich"] <- 1 
 
 Spain_data$Rich <- ifelse(Spain_data$Region == 'Extremadura', 0, ifelse(Spain_data$Region == 'Castilla_la_Mancha', 0, ifelse(Spain_data$Region == 'Murcia', 0, ifelse(Spain_data$Region == 'Canarias', 0, ifelse(Spain_data$Region == 'Galicia', 0, ifelse(Spain_data$Region == 'Comunitat_Valenciana', 0, ifelse(Spain_data$Region == 'Melilla', 0, ifelse(Spain_data$Region == 'Asturias', 0, ifelse(Spain_data$Region == 'Ceuta', 0, ifelse(Spain_data$Region == 'Castilla_y_Leon', 0, ifelse(Spain_data$Region == 'Andalucia', 0, 1)))))))))))
+
+Spain_data$Region_code <- ifelse(Spain_data$Region == 'Extremadura', 'EX', ifelse(Spain_data$Region == 'Castilla_La_Mancha', 'CM', ifelse(Spain_data$Region == 'Murcia', 'MU', ifelse(Spain_data$Region == 'Canarias', 'IC', ifelse(Spain_data$Region == 'Galicia', 'GA', ifelse(Spain_data$Region == 'Comunitat_Valenciana', 'CV', ifelse(Spain_data$Region == 'Melilla', 'ME', ifelse(Spain_data$Region == 'Asturias', 'AS', ifelse(Spain_data$Region == 'Ceuta', 'CE', ifelse(Spain_data$Region == 'Castilla_y_Leon', 'CL', ifelse(Spain_data$Region == 'Andalucia', 'AN', ifelse(Spain_data$Region == 'Cantabria', 'CA', ifelse(Spain_data$Region == 'Baleares', 'IB', ifelse(Spain_data$Region == 'Aragon', 'AR', ifelse(Spain_data$Region == 'Catalunya', 'CT', ifelse(Spain_data$Region == 'Madrid', 'MA', ifelse(Spain_data$Region == 'Navarra', 'NV', ifelse(Spain_data$Region == 'Pais_Vasco', 'PV', ifelse(Spain_data$Region == 'La_Rioja', 'LR', NA)))))))))))))))))))
 ```
 
 
@@ -77,7 +78,14 @@ where $i$ represents each of the 17 regions plus two Autonomous cities of Spain 
 ```{r basic, results='asis', tidy=TRUE, echo=FALSE}
 Reg1 <- lm(Turnout ~ Unempl_rate_less25, data = Spain_data)
 ```
+
+```{r basic, results='asis', tidy=TRUE, echo=FALSE}
 plot(Reg1,which=1)
+```
+
+```{r basic, results='asis', tidy=TRUE, echo=FALSE}
+plot(Reg1,which=2)
+```
 
 ```{r summary1, results='asis', tidy=TRUE, echo=FALSE}
 summary(Reg1)
@@ -131,9 +139,41 @@ stargazer(Reg1, Reg3)
 stargazer(Reg1, Reg2, Reg3)
 ```
 
+Spain_data["unempl_rich"]<-Spain_data$Unempl_rate_less25*Spain_data$Rich
+
+```{r}
+Spain_data["unempl_rich"]<-Spain_data$Unempl_rate_less25*Spain_data$Rich
+Reg4 <- lm(Turnout ~ Unempl_rate_less25 + Rich + unempl_rich, data = Spain_data)
+```
+
+```{r}
+summary(Reg4)
+```
+
 ```{r plot, results='asis', tidy=TRUE, echo=FALSE}
 coplot(Unempl_rate_less25 ~ Year|Region, type="l", data=Spain_data) # Lines
 coplot(Unempl_rate_less25 ~ Year|Region, type="b", data=Spain_data) # Points and
 ```
 
- 
+
+```{r plot1,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
+plotmeans(Turnout ~ Region_code, main="Heterogeineity across regions", data=Spain_data)
+``` 
+
+```{r plot2, fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
+plotmeans(Turnout ~ Year, main="Heterogeineity across years", data=Spain_data)
+``` 
+
+```{r plot3, results='asis', tidy=TRUE, echo=FALSE}
+region_code <- c("AN", "AR", "AS", "IB", "IC", "CA", "CM", "CL", "CT", "CE", "CV", "EX", "GA", "LR", "MA", "ME", "MU", "NV", "PV")
+
+region_name <- c("Andalucia", "Aragon", "Asturias", "Baleares", "Canarias", "Cantabria", "Castilla_La_Mancha", "Castilla_y_Leon", "Catalunya", "Ceuta", "Comunitat_Valenciana", "Extremadura", "Galicia", "La_Rioja", "Madrid", "Melilla", "Murcia", "Navarra", "Pais_Vasco")
+
+region.code.short <- substr(region_code, 1, 19)
+
+ggplot(data=Spain_data, aes(x=Year, y=Unempl_rate_20_24, group = Region, colour = Region)) + geom_line() + ggtitle("Youth Unemployment per region") + 
+ labs(x="Year", y="Unemployment rate 20-24") + 
+ ggtitle("Youth Unemployment per region 2004-2015") + 
+ scale_color_discrete(labels = region_code) + 
+ theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(2.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10)))
+``` 
