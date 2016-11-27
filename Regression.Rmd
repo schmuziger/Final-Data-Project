@@ -62,8 +62,9 @@ Spain_data <- Spain_data[, -c(7,7)]
 $$
 Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\epsilon_{it}
 $$
+where $i$ represents each of the 17 regions plus two Autonomous cities of Spain and $t$ represents each of the years we have data for $t={2004, 2008, 2011, 2015}$
 
-```{r}
+```{r basic, results='asis', tidy=TRUE, echo=FALSE}
 Reg1 <- lm(Turnout ~ Unempl_rate_less25, data = Spain_data)
 ```
 
@@ -72,8 +73,12 @@ summary(Reg1)
 ```
 
 ```{r stargazer, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
-stargazer(Reg1)
+stargazer(Reg1, 
+          title            = "Basic Regression",
+          covariate.labels = c("Youth Unemloyment", "Constant"),
+          dep.var.labels   = "Voter Turnout in General Elections")
 ```
+
 $$
 Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} + \epsilon_{it}
 $$
@@ -86,6 +91,30 @@ Reg2 <- lm(Turnout ~ Unempl_rate_less25 + Region, data = Spain_data)
 summary(Reg2)
 ```
 
-```{r stargazer, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
+```{r stargazer2, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
 stargazer(Reg1, Reg2)
+```
+
+```{r create dummy, results='asis', tidy=TRUE, echo=FALSE}
+# Create one dummy for each year
+Spain_data["four"] <- as.numeric(Spain_data$Year == 2004)
+Spain_data["eight"] <- as.numeric(Spain_data$Year == 2008)
+Spain_data["eleven"] <- as.numeric(Spain_data$Year == 2011)
+Spain_data["fifteen"] <- as.numeric(Spain_data$Year == 2015)
+```
+
+```{r}
+Reg3 <- lm(Turnout ~ Unempl_rate_less25 + eight + eleven + fifteen, data = Spain_data)
+```
+
+```{r}
+summary(Reg3)
+```
+
+```{r stargazer3, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
+stargazer(Reg1, Reg3)
+```
+
+```{r stargazer4, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
+stargazer(Reg1, Reg2, Reg3)
 ```
