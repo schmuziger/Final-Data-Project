@@ -1,20 +1,21 @@
 ---
 title: "Youth unemployment and turnout in Spain"
-subtitle: "Final Data Project"
 author: "Rafael Goldzweig & Rita Alvarez"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead[LO,LE]{Youth unemployment and turnout in Spain}
-    - \fancyfoot[LO,LE]{Final Data Project}
-    - \fancyfoot[RE,RO]{Rafael Goldzweig & Rita Alvarez}
 date: "December 2, 2016"
-output: 
+output:
   pdf_document:
-    toc: true
-    number_sections: true
-bibliography:
-    -  References.bib
+    number_sections: yes
+    toc: yes
+  word_document:
+    toc: yes
+header-includes:
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \fancyhead[LO,LE]{Youth unemployment and turnout in Spain}
+- \fancyfoot[LO,LE]{Final Data Project}
+- \fancyfoot[RE,RO]{Rafael Goldzweig & Rita Alvarez}
+subtitle: Final Data Project
+bibliography: References.bib
 ---
 
 ```{r options, include=FALSE, echo=FALSE}
@@ -46,7 +47,7 @@ library(stargazer)
 rm(list=ls())
 
 # set WD
-setwd('C:/Users/Schmuziger/Desktop/Final-Data-Project')
+setwd('C:/Users/Schmuziger/Desktop/Final Data Project')
 ```
 
 ```{r turnout data, results='asis', tidy=TRUE, echo=FALSE}
@@ -72,9 +73,19 @@ Spain_data$Unempl_rate_16_19 <- as.numeric(Spain_data$Unempl_rate_16_19)
 Spain_data$Unempl_rate_20_24 <- as.numeric(Spain_data$Unempl_rate_20_24)
 
 Spain_data <- Spain_data[, -c(7,7)]
-```
 
-#### ANALYZING THE DATA
+# Create category to divide rich regions from poor regions in Spain
+
+Spain_data["Rich"] <- 1 
+
+Spain_data$Rich <- ifelse(Spain_data$Region == 'Extremadura', 0, ifelse(Spain_data$Region == 'Castilla_la_Mancha', 0, ifelse(Spain_data$Region == 'Murcia', 0, ifelse(Spain_data$Region == 'Canarias', 0, ifelse(Spain_data$Region == 'Galicia', 0, ifelse(Spain_data$Region == 'Comunitat_Valenciana', 0, ifelse(Spain_data$Region == 'Melilla', 0, ifelse(Spain_data$Region == 'Asturias', 0, ifelse(Spain_data$Region == 'Ceuta', 0, ifelse(Spain_data$Region == 'Castilla_y_Leon', 0, ifelse(Spain_data$Region == 'Andalucia', 0, 1)))))))))))
+
+Spain_data$Region_code <- ifelse(Spain_data$Region == 'Extremadura', 'EX', ifelse(Spain_data$Region == 'Castilla_La_Mancha', 'CM', ifelse(Spain_data$Region == 'Murcia', 'MU', ifelse(Spain_data$Region == 'Canarias', 'IC', ifelse(Spain_data$Region == 'Galicia', 'GA', ifelse(Spain_data$Region == 'Comunitat_Valenciana', 'CV', ifelse(Spain_data$Region == 'Melilla', 'ME', ifelse(Spain_data$Region == 'Asturias', 'AS', ifelse(Spain_data$Region == 'Ceuta', 'CE', ifelse(Spain_data$Region == 'Castilla_y_Leon', 'CL', ifelse(Spain_data$Region == 'Andalucia', 'AN', ifelse(Spain_data$Region == 'Cantabria', 'CA', ifelse(Spain_data$Region == 'Baleares', 'IB', ifelse(Spain_data$Region == 'Aragon', 'AR', ifelse(Spain_data$Region == 'Catalunya', 'CT', ifelse(Spain_data$Region == 'Madrid', 'MA', ifelse(Spain_data$Region == 'Navarra', 'NV', ifelse(Spain_data$Region == 'Pais_Vasco', 'PV', ifelse(Spain_data$Region == 'La_Rioja', 'LR', NA)))))))))))))))))))
+
+region_code <- c("AN", "AR", "AS", "IB", "IC", "CA", "CM", "CL", "CT", "CE", "CV", "EX", "GA", "LR", "MA", "ME", "MU", "NV", "PV")
+
+region_name <- c("Andalucia", "Aragon", "Asturias", "Baleares", "Canarias", "Cantabria", "Castilla_La_Mancha", "Castilla_y_Leon", "Catalunya", "Ceuta", "Comunitat_Valenciana", "Extremadura", "Galicia", "La_Rioja", "Madrid", "Melilla", "Murcia", "Navarra", "Pais_Vasco")
+```
 
 ## Basic descriptive statistics
 
@@ -109,17 +120,37 @@ ggplot(Spain_data, aes(x = Region, y = Unempl_rate_less25)) + geom_line()
 
 Youth unemployment rates show a wide range during the period 2004-2015. Youth unemployment rates are structurally high in Spain. However, after the beginning of the economic crisis in 2008, youth unemployment rates explode. They went from around 20% in most regions to nearly 50%. However, Ceuta and Melilla stand out for their extremely high youth unemployment rates both before and after the economic crisis. The following graphs show that the youth unemployment rate is higher the lower is the age of the population studied.
 
-```{r plot region, fig.width=8, fig.height=5, echo=FALSE, warning=FALSE}
-ggplot(data=Spain_data, aes(x=Year, y=Unempl_rate_16_19, group = Region, colour = Region)) + geom_line() + ggtitle("Youth Unemployment per region") + labs(x="Year", y="Unemployment rate 16-19")+ 
-  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=24, hjust=0)) +
-  theme(axis.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=16))
+```{r echo = FALSE, out.width=c('300px', '300px'), fig.show='hold'} 
+
+```
+
+```{r plot region 1, fig.width=8, fig.height=5, echo=FALSE, warning=FALSE}
+# include map
+
+region_code <- c("AN", "AR", "AS", "IB", "IC", "CA", "CM", "CL", "CT", "CE", "CV", "EX", "GA", "LR", "MA", "ME", "MU", "NV", "PV")
+
+region_name <- c("Andalucia", "Aragon", "Asturias", "Baleares", "Canarias", "Cantabria", "Castilla_La_Mancha", "Castilla_y_Leon", "Catalunya", "Ceuta", "Comunitat_Valenciana", "Extremadura", "Galicia", "La_Rioja", "Madrid", "Melilla", "Murcia", "Navarra", "Pais_Vasco")
+
+ggplot(data=Spain_data, aes(x=Year, y=Unempl_rate_20_24, group = Region, colour = Region)) + geom_line() + ggtitle("Youth Unemployment per region") + 
+  labs(x="Year", y="Unemployment rate 20-24") + 
+  ggtitle("Youth Unemployment per region 2004-2015") + 
+  scale_color_discrete(labels = region_code) + 
+  theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(2.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10)))
+
+ggplot(data=Spain_data, aes(x=Year, y=Unempl_rate_20_24, group = Rich, colour = Region)) + geom_line() + ggtitle("Youth Unemployment per region") + 
+  labs(x="Year", y="Unemployment rate 20-24") + 
+  ggtitle("Youth Unemployment per region 2004-2015") + 
+  scale_color_discrete(labels = region_code) + 
+  theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(2.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10)))
 ```
 
 
 ```{r plot region 2, fig.width=8, fig.height=5, echo=FALSE, warning=FALSE}
-ggplot(data=Spain_data, aes(x=Year, y=Unempl_rate_20_24, group = Region, colour = Region)) + geom_line() + ggtitle("Youth Unemployment per region") + labs(x="Year", y="Unemployment rate 20-24")+ 
-  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=24, hjust=0)) +
-  theme(axis.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=16)) 
+install.packages("gplots")
+library(gplots)
+plotmeans(Turnout ~ Region_code, main="Heterogeineity across regions", data=Spain_data)
+
+# include map
 ```
 
 ## Unemployment and turnout
@@ -134,6 +165,72 @@ YouthUnemployment2004_2015$Mean_Unemp_Rate_less25 <- rowMeans(Unempl_rate_less25
 plot(Spain_data$Unempl_rate_total, Spain_data$turnout)
 
 # Add aesthetic mappings
+
+p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
+p + geom_point()
+p1<-p + geom_point(aes(colour = Region_code)) 
+p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
+p5 <- p3 + scale_y_continuous("Turnout",
+                              limits=c(0.4,0.85),
+                              breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(colour = Region_code), se = FALSE)
+p5
+
+p6<-p5 + theme(axis.text.x = element_blank())
+p6
+
+# Unemployment and Turnout between Rich and Poor Regions
+
+p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
+p + geom_point()
+p1<-p + geom_point(aes(colour = Rich)) 
+p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
+p5 <- p3 + scale_y_continuous("Turnout",
+                              limits=c(0.4,0.85),
+                              breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(group = Rich), se = TRUE)
+p5
+
+Spain_data["Year_character"] <- as.character(Spain_data$Year)
+
+# HIGHLIGHT SOME REGIONS WITH COLORS FOR YEARS
+
+p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
+p + geom_point()
+p1 <- p + geom_point(aes(colour = Year_character, group=Rich)) + 
+  scale_colour_identity()
+p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
+p5 <- p3 + scale_y_continuous("Turnout",
+                              limits=c(0.4,0.85),
+                              breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(colour = Year_character, group=Rich), se = FALSE)
+p5
+
+p6<-p5 + theme(axis.text.x = element_blank())
+
+p6
+
+p7 <- p6 + ggtitle("Youth Unemployment per region") + 
+  labs(x="Year", y="Unemployment rate 20-24") + 
+  ggtitle("Youth Unemployment per region 2004-2015") + 
+  scale_color_discrete(labels = region_code) + 
+  theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(2.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10)))
+p7
+
+# LINEAR BETWEEN YEARS
+
+p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
+p + geom_point()
+p1 <- p + geom_point(aes(colour = Year_character)) + 
+  scale_colour_identity()
+p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
+p5 <- p3 + scale_y_continuous("Turnout",
+                              limits=c(0.4,0.85),
+                              breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(colour = Year_character), se = FALSE)
+p5
+
+p6<-p5 + theme(axis.text.x = element_blank())
+
+p6
+
+# ORIGINAL - COLORS PER REGION AND LINES
 
 p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
 p + geom_point()
