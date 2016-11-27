@@ -1,8 +1,20 @@
 ---
-title: "Assignment 3 - Dataset creation and Analysis"
-author: "Rita Alvarez and Rafael Schmuziger"
-date: "November 11, 2016"
-output: pdf_document
+title: "Youth unemployment and turnout in Spain"
+subtitle: "Final Data Project"
+author: "Rafael Goldzweig & Rita Alvarez"
+header-includes:
+    - \usepackage{fancyhdr}
+    - \pagestyle{fancy}
+    - \fancyhead[LO,LE]{Youth unemployment and turnout in Spain}
+    - \fancyfoot[LO,LE]{Final Data Project}
+    - \fancyfoot[RE,RO]{Rafael Goldzweig & Rita Alvarez}
+date: "December 2, 2016"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+bibliography:
+    -  References.bib
 ---
 
 ```{r options, include=FALSE, echo=FALSE}
@@ -29,7 +41,11 @@ library(pastecs)
 library(stargazer)
 ```
 
-```{r set wd, message=FALSE, echo=FALSE, include=FALSE}
+```{r setup, message=FALSE, echo=FALSE, include=FALSE}
+# Clear Global environment
+rm(list=ls())
+
+# set WD
 setwd('C:/Users/Schmuziger/Desktop/Final-Data-Project')
 ```
 
