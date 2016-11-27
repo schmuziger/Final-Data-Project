@@ -32,6 +32,8 @@ library(stargazer)
 
 ```{r set wd, message=FALSE, echo=FALSE, include=FALSE}
 setwd('C:/Users/Rita/Desktop/Final-Data-Project')
+
+rm(list=ls())
 ```
 
 ```{r turnout data, results='asis', tidy=TRUE, echo=FALSE}
@@ -57,7 +59,15 @@ Spain_data$Unempl_rate_16_19 <- as.numeric(Spain_data$Unempl_rate_16_19)
 Spain_data$Unempl_rate_20_24 <- as.numeric(Spain_data$Unempl_rate_20_24)
 
 Spain_data <- Spain_data[, -c(7,7)]
+
+Spain_data["Rich"] <- 1 
+
+Spain_data$Rich <- ifelse(Spain_data$Region == 'Extremadura', 0, ifelse(Spain_data$Region == 'Castilla_la_Mancha', 0, ifelse(Spain_data$Region == 'Murcia', 0, ifelse(Spain_data$Region == 'Canarias', 0, ifelse(Spain_data$Region == 'Galicia', 0, ifelse(Spain_data$Region == 'Comunitat_Valenciana', 0, ifelse(Spain_data$Region == 'Melilla', 0, ifelse(Spain_data$Region == 'Asturias', 0, ifelse(Spain_data$Region == 'Ceuta', 0, ifelse(Spain_data$Region == 'Castilla_y_Leon', 0, ifelse(Spain_data$Region == 'Andalucia', 0, 1)))))))))))
 ```
+
+
+
+In our basic model we want to see what is the relationship between youth unemployment and voter turnout in General Election in Spain.For this we use the following equation:
 
 $$
 Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\epsilon_{it}
@@ -67,18 +77,20 @@ where $i$ represents each of the 17 regions plus two Autonomous cities of Spain 
 ```{r basic, results='asis', tidy=TRUE, echo=FALSE}
 Reg1 <- lm(Turnout ~ Unempl_rate_less25, data = Spain_data)
 ```
+plot(Reg1,which=1)
 
-```{r}
+```{r summary1, results='asis', tidy=TRUE, echo=FALSE}
 summary(Reg1)
 ```
 
-```{r stargazer, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
+```{r stargazer, results='asis', tidy=TRUE, echo=FALSE, header=FALSE}
 stargazer(Reg1, 
           title            = "Basic Regression",
           covariate.labels = c("Youth Unemloyment", "Constant"),
           dep.var.labels   = "Voter Turnout in General Elections")
 ```
 
+Our analysis can also go one step further and iclude regional fixed effects 
 $$
 Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} + \epsilon_{it}
 $$
@@ -118,3 +130,10 @@ stargazer(Reg1, Reg3)
 ```{r stargazer4, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
 stargazer(Reg1, Reg2, Reg3)
 ```
+
+```{r plot, results='asis', tidy=TRUE, echo=FALSE}
+coplot(Unempl_rate_less25 ~ Year|Region, type="l", data=Spain_data) # Lines
+coplot(Unempl_rate_less25 ~ Year|Region, type="b", data=Spain_data) # Points and
+```
+
+ 
