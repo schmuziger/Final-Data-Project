@@ -1,0 +1,114 @@
+---
+title: "Presentation"
+author: "Rita Alvarez and Rafael Schmuziger"
+date: "28 de noviembre de 2016"
+output:
+  beamer_presentation: default
+  ioslides_presentation: default
+  incremental: true
+---
+
+```{r options, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+# opts_chunk$set(tidy=FALSE)
+# opts_chunk$set(fig.path='figs/', cache.path='cache/graphics-', 
+#         fig.align='center', fig.width = 5, fig.height = 5, fig.show = 'hold',
+#         cache = TRUE, par = TRUE)
+```
+
+```{r library, message=FALSE, echo=FALSE, include=FALSE}
+library(pxR)
+library(MicroDatosEs)
+library(XML)
+library(zoo)
+library(rvest)
+library(dplyr)
+library(magrittr)
+library(foreign)
+library(readxl)
+library(ggplot2)
+library(pastecs)
+library(stargazer)
+library(gplots)
+```
+
+
+```{r set wd, message=FALSE, echo=FALSE, include=FALSE}
+setwd('C:/Users/Rita/Desktop/Final-Data-Project')
+```
+
+```{r turnout data, results='asis', tidy=TRUE, echo=FALSE}
+# Read Turnout data
+
+Turnout2004_2008_2011_2015 <- read_excel("C:/Users/Rita/Desktop/Assignment-3/ElectionsResult_2015_2011_2008_2004.xlsx", col_names = TRUE)
+```
+
+```{r unemployment data, results='asis', tidy=TRUE, echo=FALSE}
+# Read Unemployment data
+
+YouthUnemployment2004_2015 <- read_excel("C:/Users/Rita/Desktop/Assignment-3/YouthUnemployment2015_2011_2008_2004.xlsx", col_names = TRUE)
+```
+
+```{r dataset, results='asis', tidy=TRUE, echo=FALSE}
+# Merge the dataset of electoral results with the dataset of unemployment rates. Change columns as numeric and clean one column
+
+Spain_data <- merge(Turnout2004_2008_2011_2015, YouthUnemployment2004_2015, by=c("Region","Year"), all=TRUE)
+
+Spain_data$Unempl_rate_total<- as.numeric(Spain_data$Unempl_rate_total)
+Spain_data$Unempl_rate_less25 <- as.numeric(Spain_data$Unempl_rate_less25)
+Spain_data$Unempl_rate_16_19 <- as.numeric(Spain_data$Unempl_rate_16_19)
+Spain_data$Unempl_rate_20_24 <- as.numeric(Spain_data$Unempl_rate_20_24)
+
+Spain_data <- Spain_data[, -c(7,7)]
+
+Spain_data["Rich"] <- 1 
+
+Spain_data$Rich <- ifelse(Spain_data$Region == 'Extremadura', 0, ifelse(Spain_data$Region == 'Castilla_la_Mancha', 0, ifelse(Spain_data$Region == 'Murcia', 0, ifelse(Spain_data$Region == 'Canarias', 0, ifelse(Spain_data$Region == 'Galicia', 0, ifelse(Spain_data$Region == 'Comunitat_Valenciana', 0, ifelse(Spain_data$Region == 'Melilla', 0, ifelse(Spain_data$Region == 'Asturias', 0, ifelse(Spain_data$Region == 'Ceuta', 0, ifelse(Spain_data$Region == 'Castilla_y_Leon', 0, ifelse(Spain_data$Region == 'Andalucia', 0, 1)))))))))))
+
+Spain_data$Region_code <- ifelse(Spain_data$Region == 'Extremadura', 'EX', ifelse(Spain_data$Region == 'Castilla_La_Mancha', 'CM', ifelse(Spain_data$Region == 'Murcia', 'MU', ifelse(Spain_data$Region == 'Canarias', 'IC', ifelse(Spain_data$Region == 'Galicia', 'GA', ifelse(Spain_data$Region == 'Comunitat_Valenciana', 'CV', ifelse(Spain_data$Region == 'Melilla', 'ME', ifelse(Spain_data$Region == 'Asturias', 'AS', ifelse(Spain_data$Region == 'Ceuta', 'CE', ifelse(Spain_data$Region == 'Castilla_y_Leon', 'CL', ifelse(Spain_data$Region == 'Andalucia', 'AN', ifelse(Spain_data$Region == 'Cantabria', 'CA', ifelse(Spain_data$Region == 'Baleares', 'IB', ifelse(Spain_data$Region == 'Aragon', 'AR', ifelse(Spain_data$Region == 'Catalunya', 'CT', ifelse(Spain_data$Region == 'Madrid', 'MA', ifelse(Spain_data$Region == 'Navarra', 'NV', ifelse(Spain_data$Region == 'Pais_Vasco', 'PV', ifelse(Spain_data$Region == 'La_Rioja', 'LR', NA)))))))))))))))))))
+```
+
+#SUMMARY
+
+- Motivation and Research Question
+
+- Model
+
+- Sources of data and methods of gathering
+
+- Descriptive statistics
+  
+- Results
+
+- Conclusion
+
+
+#MOTIVATION AND RESEARCH QUESTION
+
+Blank
+
+
+#MODEL
+Basic model
+$$
+Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+ \epsilon_{it}
+$$
+Regional Fixed effects model
+$$
+Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} + \epsilon_{it}
+$$
+
+Regional and Time Fixed effects model
+$$
+Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} +\lambda_{t} \epsilon_{it}
+$$
+
+#SOURCES OF DATA
+
+#METHODS OF GATHERING
+
+#DESCRIPTIVE STATISTICS
+
+#RESULTS
+
+#CONCLUSIONS
