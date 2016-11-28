@@ -1,7 +1,7 @@
 ---
 title: "Presentation"
-author: "Rita Alvarez and Rafael Schmuziger"
-date: "28 de noviembre de 2016"
+author: "Rita Alvarez Martinez & Rafael Schmuziger"
+date: "December 2nd, 2016"
 output:
   beamer_presentation: default
   ioslides_presentation: default
@@ -30,6 +30,7 @@ library(ggplot2)
 library(pastecs)
 library(stargazer)
 library(gplots)
+library(car)
 ```
 
 
@@ -99,7 +100,7 @@ RECENT POLITICAL DEVELOPMENTS
 
 - Our model focus on whether \textbf{youth unemployment} (16 to 24 years old) has an impact on turnout in the case of Spain. 
 
-- \textbf{Do higher youth unemployment rates have impact on voter turnout?}  
+\textbf{Do higher youth unemployment rates have impact on voter turnout?}  
 
 
 #MODEL
@@ -116,13 +117,34 @@ $$
 
 #SOURCES OF DATA
 
-Dataset comprised by two sources. 
+Dataset comprised by two sources: 
+
 1. Electoral data of 2004, 2008, 2011 and 2015 (Spain Public Administration).
 2. Unemployment rates by age groups in the same period (Spanish National Statistics Institute - INE).
 
 #METHODS OF GATHERING
 
-#DESCRIPTIVE STATISTICS
+- \textbf{Electoral data:} \textbf{\textit{Web scraping}} we used a different URL source to grab the data available online for each of the 19 regions of Spain in the four election cycles.
+
+- \textbf{Unemployment data:} We used the tool that the INE offers to download the needed data on Excel and imported from R.
+
+Both datasets were cleaned/merged to form the final dataset "Spain_data".
+
+#DESCRIPTIVE STATISTICS (1)
+
+\textbf{Dependent Variable: Turnout}
+
+```{r plot1,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
+boxplot(Turnout ~ Region_code, main="Heterogeineity across regions", data=Spain_data)
+``` 
+
+#DESCRIPTIVE STATISTICS (2)
+
+\textbf{Dependent Variable: Turnout}
+
+```{r plot2, fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE, warning=FALSE}
+boxplot(Turnout ~ Year, main="Heterogeineity across years", data=Spain_data)
+``` 
 
 #RESULTS
 
