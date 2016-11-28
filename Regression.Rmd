@@ -157,11 +157,11 @@ coplot(Unempl_rate_less25 ~ Year|Region, type="b", data=Spain_data) # Points and
 
 
 ```{r plot1,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
-plotmeans(Turnout ~ Region_code, main="Heterogeineity across regions", data=Spain_data)
+boxplot(Turnout ~ Region_code, main="Heterogeineity across regions", data=Spain_data)
 ``` 
 
 ```{r plot2, fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
-plotmeans(Turnout ~ Year, main="Heterogeineity across years", data=Spain_data)
+Boxplot(Turnout ~ Year, main="Heterogeineity across years", data=Spain_data)
 ``` 
 
 ```{r plot3, results='asis', tidy=TRUE, echo=FALSE}
@@ -177,3 +177,4 @@ ggplot(data=Spain_data, aes(x=Year, y=Unempl_rate_20_24, group = Region, colour 
  scale_color_discrete(labels = region_code) + 
  theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(2.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10)))
 ``` 
+
