@@ -83,16 +83,27 @@ Spain_data$Region_code <- ifelse(Spain_data$Region == 'Extremadura', 'EX', ifels
 - Conclusion
 
 
-#MOTIVATION AND RESEARCH QUESTION
+#MOTIVATION
 
-Blank
+RECENT POLITICAL DEVELOPMENTS
+
+- \textbf{Spanish political system:} From a bi-party system (PP and the PSOE) to a multy party system (PP, PSOE, Podemos and Ciudadanos) in less than two years. 
+
+- \textbf{Critical social situation:} Especially for young people (youth unemployment rates reached 48.1%  in 2015).
+
+- \textbf{Increased social mobilization:} The M15 movement (\textit{indigandos}) and demonstrations against austerity measures mobilized people traditionally not involved with politics - especially young people.
+
+#RESEARCH QUESTIONS
+
+- \textbf{Literature:} Turnout rate related to age, race/ethnicity, gender, socio-economic status and political/economical factors. 
+
+- Our model focus on whether \textbf{youth unemployment} (16 to 24 years old) has an impact on turnout in the case of Spain. 
+
+- \textbf{Do higher youth unemployment rates have impact on voter turnout?}  
 
 
 #MODEL
-Basic model
-$$
-Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+ \epsilon_{it}
-$$
+
 Regional Fixed effects model
 $$
 Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} + \epsilon_{it}
@@ -100,10 +111,14 @@ $$
 
 Regional and Time Fixed effects model
 $$
-Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} +\lambda_{t} \epsilon_{it}
+Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} +\lambda_{t}+ \epsilon_{it}
 $$
 
 #SOURCES OF DATA
+
+Dataset comprised by two sources. 
+1. Electoral data of 2004, 2008, 2011 and 2015 (Spain Public Administration).
+2. Unemployment rates by age groups in the same period (Spanish National Statistics Institute - INE).
 
 #METHODS OF GATHERING
 
