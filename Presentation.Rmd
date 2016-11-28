@@ -148,6 +148,23 @@ boxplot(Turnout ~ Year, main="Heterogeineity across years", data=Spain_data)
 
 #DESCRIPTIVE STATISTICS (3)
 
+\textbf{Independent Variable: Youth Unemployment}
+
+```{r plot5,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
+d2004 <- subset(Spain_data, Year <= 2004)
+d2008 <- subset(Spain_data, Year <= 2008 & Year>2004)
+d2011 <- subset(Spain_data, Year <= 2011 & Year>2008)
+d2015 <- subset(Spain_data, Year <= 20015 & Year>2011)
+
+ggplot() +
+geom_line(data=d2004, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='black') +
+geom_line(data=d2008, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='red') +
+geom_line(data=d2011, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='green') +
+geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='blue')
+```
+
+#DESCRIPTIVE STATISTICS (4)
+
 Turnout and Youth Unemployment
 
 ```{r plot3,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
@@ -161,7 +178,7 @@ p6<-p5 + theme(axis.text.x = element_blank())
 p6
 ``` 
 
-#DESCRIPTIVE STATISTICS (4)
+#DESCRIPTIVE STATISTICS (5)
 
 Turnout and Youth Unemployment patterns
 
@@ -177,5 +194,10 @@ p6
 ``` 
 
 #RESULTS
+
+```{r stargazer2, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
+Reg2 <- lm(Turnout ~ Unempl_rate_less25 + Region, data = Spain_data)
+stargazer(Reg2)
+```
 
 #CONCLUSIONS
