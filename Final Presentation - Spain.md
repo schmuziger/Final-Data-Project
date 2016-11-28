@@ -1,21 +1,24 @@
 Final Presentation - Spain
 ========================================================
-author: Rita Alvarez Martinez and Rafael Goldzweig
+author: Rita Alvarez and Rafael Goldzweig
 date: 02.12.2016
 autosize: true
 
-First Slide
+SUMMARY
 ========================================================
 
-For more details on authoring R presentations please visit <https://support.rstudio.com/hc/en-us/articles/200486468>.
 
-- What is your research question? Why is it interesting?
+- MOTIVATION AND RESEARCH QUESTION
 
-- What data did you gather/methods did you use?
+- MODEL
 
-- What are your results? How do you plan to present these?
+- DATA 
+  - SOURCES AND METHODS OF GATHERING
+  - DESCRIPTIVE STATISTICS
+  
+- RESULTS
 
-- What issue do you still have/questions you want to ask?
+- CONCLUSION
 
 Slide With Code
 ========================================================
