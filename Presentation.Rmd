@@ -158,15 +158,15 @@ d2011 <- subset(Spain_data, Year <= 2011 & Year>2008)
 d2015 <- subset(Spain_data, Year <= 20015 & Year>2011)
 
 ggplot() +
-geom_line(data=d2004, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='black') +
-geom_line(data=d2008, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='red') +
-geom_line(data=d2011, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='green') +
-geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='blue') + ggtitle("Youth Unemployment per region 2004-2015") + 
-  labs(x="Region", y="Unemployment rate 16-24") + 
-  ggtitle("Youth Unemployment per region 2004-2015") + 
-  scale_color_discrete(labels = Spain_data$Year) + 
-  theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(2.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10))) + theme_bw() + theme(axis.title.x = element_text(size = 15, vjust=-.2)) +
-  theme(axis.title.y = element_text(size = 15, vjust=0.3))
+geom_line(data=d2004, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour = "2004")) +
+geom_line(data=d2008, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour = "2008")) +
+geom_line(data=d2011, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour = "2011")) +
+geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour = "2015")) + ggtitle("Youth Unemployment per region 2004-2015") + 
+ labs(x="Region", y="Unemployment rate 16-24") + 
+ ggtitle("Youth Unemployment per region 2004-2015") + 
+ scale_color_discrete(labels = Spain_data$Year) + 
+ theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(5.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10))) + theme(axis.title.x = element_text(size = 15, vjust=-.2)) +
+ theme(axis.title.y = element_text(size = 15, vjust=0.3))
 ```
 
 #DESCRIPTIVE STATISTICS (4)
@@ -253,6 +253,16 @@ plot(Reg3,which=1)
 
 #CONCLUSIONS
 
+- In Spain, youth unemployment affects turnout negatively, in general.
+
+\textbf{BUT:}
+
+- Different regions present different patterns
+
+- In 2015, a higher level of youth unemployment was correlated to higher tunout
+
+
+
 #EXTRA SLIDE
 
 ```{r stargazer2, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
@@ -272,5 +282,3 @@ stargazer(Reg2,Reg3,
           covariate.labels = c("Youth Unemloyment", "Constant"),
           dep.var.labels   = "Voter Turnout in General Elections")
 ```
-
-#CONCLUSIONS
