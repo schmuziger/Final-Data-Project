@@ -199,11 +199,74 @@ p6<-p5 + theme(axis.text.x = element_blank())
 p6
 ``` 
 
-#RESULTS
+#RESULTS (1)
+
+\begin{table}[!htbp] \centering 
+  \caption{Basic Regression} 
+  \label{} 
+\normalsize
+\scalebox{0.55}
+{
+\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-3} 
+\\[-1.8ex] & \multicolumn{2}{c}{Voter Turnout in General Elections} \\ 
+\\[-1.8ex] & (1) & (2)\\ 
+\hline \\[-1.8ex] 
+ Youth Unemloyment & $-$0.001$^{***}$ & $-$0.001$^{*}$ \\ 
+  & (0.0002) & (0.001) \\ 
+eight &  & $-$0.007 \\ 
+  &  & (0.007) \\ 
+eleven &  & $-$0.009 \\ 
+  &  & (0.016) \\ 
+ fifteen &  & 0.006 \\ 
+  &  & (0.018) \\ 
+ Constant & 0.771$^{***}$ & 0.777$^{***}$ \\ 
+  & (0.013) & (0.021) \\ 
+Region fixed effects & YES& YES \\
+\hline \\[-1.8ex] 
+Observations & 76 & 76 \\ 
+R$^{2}$ & 0.925 & 0.933 \\ 
+Adjusted R$^{2}$ & 0.899 & 0.906 \\ 
+Residual Std. Error & 0.021 (df = 56) & 0.020 (df = 53) \\ 
+F Statistic & 36.162$^{***}$ (df = 19; 56) & 33.701$^{***}$ (df = 22; 53) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular}
+}
+\end{table} 
+
+#RESULTS (2)
+```{r fix, results='asis', tidy=TRUE, echo=FALSE}
+# Create one dummy for each year
+Spain_data["four"] <- as.numeric(Spain_data$Year == 2004)
+Spain_data["eight"] <- as.numeric(Spain_data$Year == 2008)
+Spain_data["eleven"] <- as.numeric(Spain_data$Year == 2011)
+Spain_data["fifteen"] <- as.numeric(Spain_data$Year == 2015)
+
+Reg3 <- lm(Turnout ~ Unempl_rate_less25 + Region + eight + eleven + fifteen, data = Spain_data)
+plot(Reg2,which=1)
+```
+
+#CONCLUSIONS
+
+#EXTRA SLIDE
 
 ```{r stargazer2, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
-Reg2 <- lm(Turnout ~ Unempl_rate_less25, data = Spain_data)
-stargazer(Reg2,
+Reg2 <- lm(Turnout ~ Unempl_rate_less25 + Region, data = Spain_data)
+
+# Create one dummy for each year
+Spain_data["four"] <- as.numeric(Spain_data$Year == 2004)
+Spain_data["eight"] <- as.numeric(Spain_data$Year == 2008)
+Spain_data["eleven"] <- as.numeric(Spain_data$Year == 2011)
+Spain_data["fifteen"] <- as.numeric(Spain_data$Year == 2015)
+
+Reg3 <- lm(Turnout ~ Unempl_rate_less25 + Region + eight + eleven + fifteen, data = Spain_data)
+
+stargazer(Reg2,Reg3,
           header=FALSE,
           title = "Basic Regression",
           covariate.labels = c("Youth Unemloyment", "Constant"),

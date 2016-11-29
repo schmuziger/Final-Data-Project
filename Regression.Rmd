@@ -28,6 +28,8 @@ library(ggplot2)
 library(pastecs)
 library(stargazer)
 library(gplots)
+library(plm)
+library(lmtest)
 ```
 
 
@@ -105,6 +107,8 @@ $$
 
 ```{r fix, results='asis', tidy=TRUE, echo=FALSE}
 Reg2 <- lm(Turnout ~ Unempl_rate_less25 + Region, data = Spain_data)
+coeftest(Reg2, vcovHC(Reg2, method = "arellano")) 
+plot(Reg2,which=1)
 ```
 
 ```{r}
@@ -124,7 +128,7 @@ Spain_data["fifteen"] <- as.numeric(Spain_data$Year == 2015)
 ```
 
 ```{r}
-Reg3 <- lm(Turnout ~ Unempl_rate_less25 + eight + eleven + fifteen, data = Spain_data)
+Reg3 <- lm(Turnout ~ Unempl_rate_less25 +Region + eight + eleven + fifteen, data = Spain_data)
 ```
 
 ```{r}
