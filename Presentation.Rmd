@@ -6,6 +6,7 @@ output:
   beamer_presentation: default
   ioslides_presentation: default
   incremental: true
+
 ---
 
 ```{r options, include=FALSE, echo=FALSE}
@@ -160,7 +161,12 @@ ggplot() +
 geom_line(data=d2004, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='black') +
 geom_line(data=d2008, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='red') +
 geom_line(data=d2011, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='green') +
-geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='blue')
+geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1), color='blue') + ggtitle("Youth Unemployment per region 2004-2015") + 
+  labs(x="Region", y="Unemployment rate 16-24") + 
+  ggtitle("Youth Unemployment per region 2004-2015") + 
+  scale_color_discrete(labels = Spain_data$Year) + 
+  theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(2.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10))) + theme_bw() + theme(axis.title.x = element_text(size = 15, vjust=-.2)) +
+  theme(axis.title.y = element_text(size = 15, vjust=0.3))
 ```
 
 #DESCRIPTIVE STATISTICS (4)
@@ -196,8 +202,12 @@ p6
 #RESULTS
 
 ```{r stargazer2, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
-Reg2 <- lm(Turnout ~ Unempl_rate_less25 + Region, data = Spain_data)
-stargazer(Reg2)
+Reg2 <- lm(Turnout ~ Unempl_rate_less25, data = Spain_data)
+stargazer(Reg2,
+          header=FALSE,
+          title = "Basic Regression",
+          covariate.labels = c("Youth Unemloyment", "Constant"),
+          dep.var.labels   = "Voter Turnout in General Elections")
 ```
 
 #CONCLUSIONS

@@ -103,7 +103,7 @@ $$
 Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} + \epsilon_{it}
 $$
 
-```{r}
+```{r fix, results='asis', tidy=TRUE, echo=FALSE}
 Reg2 <- lm(Turnout ~ Unempl_rate_less25 + Region, data = Spain_data)
 ```
 
@@ -112,7 +112,7 @@ summary(Reg2)
 ```
 
 ```{r stargazer2, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
-stargazer(Reg1, Reg2)
+stargazer(Reg1, Reg2, header=FALSE)
 ```
 
 ```{r create dummy, results='asis', tidy=TRUE, echo=FALSE}
