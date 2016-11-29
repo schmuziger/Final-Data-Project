@@ -108,12 +108,12 @@ RECENT POLITICAL DEVELOPMENTS
 
 Regional Fixed effects model
 $$
-Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} + \epsilon_{it}
+(1)\ Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} + \epsilon_{it}
 $$
 
 Regional and Time Fixed effects model
 $$
-Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} +\lambda_{t}+ \epsilon_{it}
+(2)\ Turnout_{it}= \beta_{0}+\beta_{1}Youth\ Unemployment\ Rate_{it}+\delta_{i} +\lambda_{t}+ \epsilon_{it}
 $$
 
 #SOURCES OF DATA
@@ -248,7 +248,7 @@ Spain_data["eleven"] <- as.numeric(Spain_data$Year == 2011)
 Spain_data["fifteen"] <- as.numeric(Spain_data$Year == 2015)
 
 Reg3 <- lm(Turnout ~ Unempl_rate_less25 + Region + eight + eleven + fifteen, data = Spain_data)
-plot(Reg2,which=1)
+plot(Reg3,which=1)
 ```
 
 #CONCLUSIONS
