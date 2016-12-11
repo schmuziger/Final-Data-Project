@@ -1,6 +1,6 @@
 ---
 title: "Youth unemployment and turnout in Spain"
-author: "Rafael Goldzweig & Rita Alvarez"
+author: "Rafael Goldzweig & Rita Alvarez Martinez"
 date: "December 2, 2016"
 output:
   pdf_document:
@@ -138,144 +138,88 @@ In this context, @jover2014political argues that the previous distrust feeling w
 
 In this framework, our study aims to build upon the research of economic variables affecting turnout, especially through the channel of unemployment. Without focusing directly on the change of preferences that traditionally is taken into account to analyze voter behavior, we want to see if socio-economic reasons have the potential to affect general turnout rates through the mobilization of groups traditionally not very politically active. 
 
-# DATA 
+# DATA AND METHODS OF GATHERING
+
+Our model will be tested using data from each of the regions of Spain in four different years: 2004, 2008, 2001 and 2015 that were the years were general elections were held.
 
 \textbf{Dependent variable}
 
-Our dependent variable is voter turnout in the Spanish general elections of 
+Our dependent variable is \textbf{voter turnout} in the Spanish general elections for the elections in 2004, 2008, 2001 and 2015. The elections in 2015 did not result in the formation of government due to a highly fragmented parlament and the general elections were reperated in 2016. However, we decided to use only the data from the 2015 election since in a second call people might turn or not to turn to vote for different reasons than in normal elections. The electoral data results from 2008 and 2011 came from the same source (Spain Public Administration), while the 2015 and 2004 (media) from one source each. All of them report the results from the elections according to the Spanish Ministry of Interior Affairs. We made use of a web-scrappable interface from the websites of our sources to import the results to build our dataset. For each of the 19 regions of Spain, we used a differet URL source to grab the data available online. This process was done simmilarly with the data from 2008, 2011 and 2015. We could not find any source online that provided a web scraping friendly version from the data of 2004, and we decided to create an excel file with it.
 
-Our model will be tested using data from the Spanish Statistic Office (INE), the Electoral Results from the Spanish Ministry of Interior Affairs (MI), Eurostat and Expansion in the different regions of the country.
 
-The electoral data results from 2008 and 2011 came from the same source (Spain Public Administration), while the 2015 and 2004 (media) from one source each. All of them report the results from the elections according to the Spanish Ministry of Interior Affairs. We made use of a web-scrappable interface from the websites of our sources to import the results to build our dataset. For each of the 19 regions of Spain, we used a differet URL source to grab the data available online. This process was done simmilarly with the data from 2008, 2011 and 2015. We could not find any source online that provided a web scraping friendly version from the data of 2004, and we decided to create an excel file with it. 
+The following graph represents the turnout heterogeneity across regions during the years 2004 to 2015. The average turnout rate in Spain in these years was 72.02% which is a pretty high turnout rate for a developed country that does not have compulsory voting. However, voter tunout varies greatly among the different regions in Spain. Interestengly, the regions with lower median are Ceuta (CE) and Melilla (ME), two Autonomous cities belonging to Spain but geographically in Moroccan territory, Canarias (IC) and Baleares (IB), and Cataluña (CT), Pais Vasco (PV) and Galicia (GA), the three regions with historical nationalist feelings that have their own official language in addition to Spanish.This indicates that there could be an strong feeling to detachment from the central government and that is why their median turnout in general elections is lower.
 
-The unemployment rates by age data comes from the Spanish National Statistics Institute (INE). The data is available by trimester for every year and every region. We imported the data directly from the website and transformed the database to fit the ones containing the electoral results. 
 
-We also collected data from Eurostat on the percentage of university graduates per region and data from Expansion on the GDP per capita and GDP growth per region. 
+```{r plot1,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
+boxplot(Turnout ~ Region_code, main="Voter Turnout heterogeineity across regions", ylab ="Voter turnout (%)", xlab="Region", data=Spain_data)
+``` 
+ 
+ Voter tunout heterogeneity across years show that the median didn't change much but that 2011 was the year where people voted less. 
+ 
+```{r plot2, fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE, warning=FALSE}
+boxplot(Turnout ~ Year, main="Voter turnout heterogeineity across years", ylab ="Voter turnout (%)", xlab="Year", data=Spain_data)
+``` 
 
-We used web scraping as well as downloading the datasets directly from the sources and then we merged using Region and Year as our common variables to form the final dataset "Spain_data".
+\textbf{Independent variables}
+
+
+Our main independent variable is \textbf{youth unemployment rate} in Spain. This data come from the Spanish National Statistics Institute (INE). The data is available by trimester for every year and every region. We imported the data directly from the website and transformed the database to fit the ones containing the electoral results. 
+
+In the next graph we can observe that there was a drastic growth in young unemployment from 2004-2008 to 2011-2015 in every region in the country. The effects of the finantial crisis on youth unemployment started to be latent from 2009 ownwards and that explain this difference. Youth unemployment went from around 20% in most regions to nearly 50%. However, Ceuta (CE) and Melilla (ME) stand out for their extremely high youth unemployment rates both before and after the economic crisis.
+
+```{r plot5,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
+d2004 <- subset(Spain_data, Year <= 2004)
+d2008 <- subset(Spain_data, Year <= 2008 & Year>2004)
+d2011 <- subset(Spain_data, Year <= 2011 & Year>2008)
+d2015 <- subset(Spain_data, Year <= 20015 & Year>2011)
+
+ggplot() +
+geom_line(data=d2004, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour = "2004")) +
+geom_line(data=d2008, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour = "2008")) +
+geom_line(data=d2011, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour = "2011")) +
+geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour = "2015")) + ggtitle("Youth Unemployment per region 2004-2015") + 
+ labs(x="Region", y="Unemployment rate 16-24") + 
+ ggtitle("Youth Unemployment per region 2004-2015") + 
+ scale_color_discrete(labels = Spain_data$Year) + 
+ theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(5.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10))) + theme(axis.title.x = element_text(size = 15, vjust=-.2)) +
+ theme(axis.title.y = element_text(size = 15, vjust=0.3))
+```
+
+Other independent variables include \textbf{GDP per capita} and \textbf{percentage of university graduates}. The GDP per capita comes from a dataset from Expansion and the percentage of university graduates come from Eurostat.
+
+##Relationship between voter turnout and youth unemloyment
+
+The following graph shows a preliminary explotation of the relationship between our main variables. A priori it seems that higher youth unemployment is correlated with lower levels of turnout, contrary to our hypothesis. However, the graph shows that in some regions this relationship is reversed. The following sections of the paper would explore this relationship deeply. 
+
+```{r plot4,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
+p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
+p1<-p + geom_point(aes(colour = Region_code)) 
+p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
+p5 <- p3 + scale_y_continuous("Voter Turnout",
+                              limits=c(0.4,0.85),
+                              breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(colour = Region_code), se = FALSE)
+p6<-p5 + theme(axis.text.x = element_blank())
+p6
+``` 
+
 
 
 # STATISTICAL MODEL AND HYPOTHESIS
 
-Our theory is that turnout is positively impacted by higher youth unemployment rates. In order to analyze this relation statistically we use voter turnout as our main dependent variable and youth unemployment rate as our main independent variable. We also control 
-
-for differences among the distinct regions in Spain, we propose the following model:
+To test our hypothesis that turnout is positively impacted by higher youth unemployment rates we propose the following model:
 
 $Turnout_{i,t}=\beta_0+\beta_1 Youth\ Unemployment_{i,t}+\beta_2 \% Annual\ GDP \ growth + \beta_3 \% Tertiary\ Education + \delta_i + \lambda_t +  u_{i,t}$
 
-where $i$ represents each of the 19 regions of Spain, $t$ represent the most recent years where general elections where held: 2004, 2008, 2011 and 2015 and $\delta_i$ represents regional fixed effects. 
+where $i$ represents each of the 19 regions of Spain, $t$ represent the most recent years where general elections where held: 2004, 2008, 2011 and 2015, $\delta_i$ represents regional fixed effects and $\lambda_t$ represents time fixed effects. 
 
 
-## Basic descriptive statistics
-
-```{r 1, results='asis', tidy=TRUE, echo=FALSE, include=FALSE}
-stat.desc(Spain_data) 
-m <- stat.desc(Spain_data, basic=F)
-m <- m[, -c(1:2)]
-```
-
-
-```{r stargazer, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
-stargazer(m)
-```
-
-We are looking at tunout from general elections in Spain that occured in the years 2004, 2008, 2011 and 2015. The elections in 2015 did not result in the formation of government due to a highly fragmented parlament and the general elections were reperated in 2016. However, we decided to use only the data from the 2015 election since in a second call people might turn or not to turn to vote for different reasons than in normal elections.  The average turnout rate in Spain in these years (2004, 2008, 2011, 2015) was 72.02%. This is a pretty high turnout rate for a developed country that does not have compulsory voting. However, the differences across regions would be notable. Another thing to highlight from the table above is that invalid votes are in general more casted than blank votes.
-
-When looking at unemployemnt rates it is clear that the average youth unemployment rate is much higher than the average total unemployment rate in years 2004, 2008, 2011 and 2015. Average youth unemployment rates increase drastically as the age of the populations groups studied lowers. Also, the standard deviation of the mean unemployment rate is higher for youth unemployemnt rate than for the normal unemployment rate indicating that youth unemployment varied more from year 2004 to year 2015.
-
-##Turnout
-
-```{r plot turnout, fig.width=8, fig.height=6, echo=FALSE}
-ggplot(Spain_data, aes(x = Region, y = Turnout)) + geom_line()
-```
-
-The plot shows the variability of tunout by region in Spain. The regions that have lower turnout during the years 2004-2015 were Ceuta, Melilla, Baleares and Canarias. Ceuta and Melilla and autonomous cities that are phisically in Moroccan territory and Baleares and Canarias are islands. This gives the hint that people living in this regions might feel less attached to the Central government and therefore they vote less. It is also interesting to observe that the regions with a second official language different than Spanish, Catalunya, Galicia and Pais Vasco tend to have also lower turnout rates in the period.
-
-##Unemployment
-
-```{r plot unemployment, fig.width=8, fig.height=6, echo=FALSE}
-ggplot(Spain_data, aes(x = Region, y = Unempl_rate_less25)) + geom_line()
-```
-
-Youth unemployment rates show a wide range during the period 2004-2015. Youth unemployment rates are structurally high in Spain. However, after the beginning of the economic crisis in 2008, youth unemployment rates explode. They went from around 20% in most regions to nearly 50%. However, Ceuta and Melilla stand out for their extremely high youth unemployment rates both before and after the economic crisis. The following graphs show that the youth unemployment rate is higher the lower is the age of the population studied.
-
-```{r echo = FALSE, out.width=c('300px', '300px'), fig.show='hold'} 
-
-```
-
-```{r plot region 1, fig.width=8, fig.height=5, echo=FALSE, warning=FALSE}
-# include map
-
-region_code <- c("AN", "AR", "AS", "IB", "IC", "CA", "CM", "CL", "CT", "CE", "CV", "EX", "GA", "LR", "MA", "ME", "MU", "NV", "PV")
-
-region_name <- c("Andalucia", "Aragon", "Asturias", "Baleares", "Canarias", "Cantabria", "Castilla_La_Mancha", "Castilla_y_Leon", "Catalunya", "Ceuta", "Comunitat_Valenciana", "Extremadura", "Galicia", "La_Rioja", "Madrid", "Melilla", "Murcia", "Navarra", "Pais_Vasco")
-
-ggplot(data=Spain_data, aes(x=Year, y=Unempl_rate_20_24, group = Region, colour = Region)) + geom_line() + ggtitle("Youth Unemployment per region") + 
-  labs(x="Year", y="Unemployment rate 20-24") + 
-  ggtitle("Youth Unemployment per region 2004-2015") + 
-  scale_color_discrete(labels = region_code) + 
-  theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(2.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10)))
-```
-
-
-```{r plot region 2, fig.width=8, fig.height=5, echo=FALSE, warning=FALSE}
-
-plotmeans(Turnout ~ Region_code, main="Heterogeineity across regions", data=Spain_data)
-
-# include map
-```
-
-## Unemployment and turnout
-
-
-```{r unemp turn, fig.width=8, fig.height=6, echo=FALSE, warning=FALSE}
-plot(Spain_data$Unempl_rate_total, Spain_data$turnout)
-```
-
-```{r unemp turn 1, fig.width=8, fig.height=6, echo=FALSE, warning=FALSE}
-# Add aesthetic mappings
-
-p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
-p + geom_point()
-p1<-p + geom_point(aes(colour = Region_code)) 
-p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
-p5 <- p3 + scale_y_continuous("Turnout",
-                              limits=c(0.4,0.85),
-                              breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(colour = Region_code), se = FALSE)
-p5
-
-p6<-p5 + theme(axis.text.x = element_blank())
-p6
-```
-
-
-# ORIGINAL - COLORS PER REGION AND LINES
-```{r unemp turn 5, fig.width=8, fig.height=6, echo=FALSE, warning=FALSE}
-p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
-p + geom_point()
-p1<-p + geom_point(aes(colour = Region)) 
-p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
-p5 <- p3 + scale_y_continuous("Turnout",
-                              limits=c(0.4,0.85),
-                              breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(colour = Region), se = FALSE)
-p5
-
-p6<-p5 + theme(axis.text.x = element_blank())
-p6
-```
-
-This plot shows how tunout and youth unemploment rate could be correlated. The plot shows that the correlation is not clear. 
-
-The graphs are not showing the potential correlation by region that may exist between unemployment and turnout, an information that could give us a different perspective on the issue. Therefore, we need to explore this dataset further in order to conclude which is the relationship between turnout and youth unemployment rate in Spain.
 
 ##Regressions
 
-```{r p, results='asis', tidy=TRUE, echo=FALSE, header = FALSE}
+install.packages ("iso.expand")
 
-Reg3 <- lm(Turnout ~ Unempl_rate_less25*GDPpc + Unempl_rate_less25 + GDPpc + PctUniversityGraduates + Region + , data = Spain_data)
+iso.expand("ES")
+map(regions=sov.expand("Spain"))
 
-ggplot(data = margins, aes(x = netenergy_imports, y = me, ymin = lwr, ymax = upr)) + geom_ribbon(fill = 'blue', alpha = 0.2) + geom_line(colour = "red", size =1) + theme_bw() + geom_hline(yintercept = 0, linetype = 'dashed') + xlab("\nEnergy Imports (% of consumption)") + ylab("Marginal Effect of Oil Price\n") + ggtitle("") + theme(panel.background = element_rect(fill = 'white', colour = 'black'))
-stargazer(m)
-```
 
 ##Bibliography
