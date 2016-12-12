@@ -1,10 +1,25 @@
 ---
-title: "A Nonsensical Flex Dashboard"
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+title: "WHAT ARE THE REASONS BEHIND THE RECENT EVOLUTIONS IN THE SPANISH POLITICAL SYSTEM?"
+author: "Rafael Goldzweig & Rita Alvarez"
+date: "12 Dezember 2016"
+output: html_document
 ---
+```{r library, message=FALSE, echo=FALSE, include=FALSE}
+library(pxR)
+library(MicroDatosEs)
+library(XML)
+library(zoo)
+library(rvest)
+library(dplyr)
+library(magrittr)
+library(foreign)
+library(readxl)
+library(ggplot2)
+library(pastecs)
+library(stargazer)
+library(gplots)
+library(car)
+```
 
 ```{r data}
 Spain_data <- read.csv("https://raw.githubusercontent.com/schmuziger/Final-Data-Project/master/spain_data.csv")
