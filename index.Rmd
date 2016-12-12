@@ -21,11 +21,9 @@ library(gplots)
 library(car)
 ```
 
-```{r data}
+```{r dataset, message=FALSE, echo=FALSE}
 Spain_data <- read.csv("https://raw.githubusercontent.com/schmuziger/Final-Data-Project/master/spain_data.csv")
 ```
-
-WHAT ARE THE REASONS BEHIND THE RECENT EVOLUTIONS IN THE SPANISH POLITICAL SYSTEM?
 
 The Spanish parliament had a dramatic  change in its composition in a short period of time. Going from a bi-party system dominated by the PP - center-right - and the PSOE - center-left-, new parties gained strength during the Euro-crisis and managed to become relevant forces in the country´s political system. 
 
@@ -33,12 +31,10 @@ Podemos and Ciudadanos had a strong anti-austerity discourse and managed to chan
 
 Here you can find an overview of the reasons and a study on how - and how much - the high levels of youth unemployment affected turnout in the country. Our guess is that, for the appeal to young voters and people demanding change, these new parties benefitted from a greater turnout, especially fostered by young people.
 
-Column {data-width=350}
+HIGH LEVELS OF YOUTH UNEMPLOYMENT {data-width=350}
 -----------------------------------------------------------------------
 
-HIGH LEVELS OF YOUTH UNEMPLOYMENT
-
-```{r unemployment}
+```{r unemployment, message=FALSE, echo=FALSE}
 d2004 <- subset(Spain_data, Year <= 2004)
 d2008 <- subset(Spain_data, Year <= 2008 & Year>2004)
 d2011 <- subset(Spain_data, Year <= 2011 & Year>2008)
@@ -56,14 +52,12 @@ geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour
  theme(axis.title.y = element_text(size = 15, vjust=0.3))
 ```
 
-Column {data-width=350}
+DOES TURNOUT AND UNEMPLOYMENT CHANGE BETWEEN REGIONS? {data-width=350}
 -----------------------------------------------------------------------
-
-DOES TURNOUT AND UNEMPLOYMENT CHANGE BETWEEN REGIONS?
 
 The following graph shows a preliminary explotation of the relationship between our main variables. A priori it seems that higher youth unemployment is correlated with lower levels of turnout, contrary to our hypothesis. However, the graph shows that in some regions this relationship is reversed. The following sections of the paper would explore this relationship deeply.
 
-```{r regions}
+```{r regions, message=FALSE, echo=FALSE}
 p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
 p1<-p + geom_point(aes(colour = Region_code)) 
 p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
