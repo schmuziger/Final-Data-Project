@@ -1,29 +1,26 @@
----
-title: "A Nonsensical Flex Dashboard"
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
----
+<html>
 
-```{r data}
-Spain_data <- read.csv("https://raw.githubusercontent.com/schmuziger/Final-Data-Project/master/spain_data.csv")
-```
+<head>
+<title>WHAT ARE THE REASONS BEHIND THE RECENT EVOLUTIONS IN THE SPANISH POLITICAL SYSTEM?</title>
+</head>
 
-WHAT ARE THE REASONS BEHIND THE RECENT EVOLUTIONS IN THE SPANISH POLITICAL SYSTEM?
+<body>
 
-The Spanish parliament had a dramatic  change in its composition in a short period of time. Going from a bi-party system dominated by the PP - center-right - and the PSOE - center-left-, new parties gained strength during the Euro-crisis and managed to become relevant forces in the country´s political system. 
+<p>This is an R HTML document. When you click the <b>Knit HTML</b> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+
+The <p>Spanish parliament</p> had a dramatic  change in its composition in a short period of time. Going from a bi-party system dominated by the PP - center-right - and the PSOE - center-left-, new parties gained strength during the Euro-crisis and managed to become relevant forces in the country´s political system. 
 
 Podemos and Ciudadanos had a strong anti-austerity discourse and managed to channel the social dissatisfaction into votes, fostered by many demonstrations happening in the country.
 
 Here you can find an overview of the reasons and a study on how - and how much - the high levels of youth unemployment affected turnout in the country. Our guess is that, for the appeal to young voters and people demanding change, these new parties benefitted from a greater turnout, especially fostered by young people.
 
-Column {data-width=350}
------------------------------------------------------------------------
+<!--begin.rcode
+Spain_data <- read.csv("https://raw.githubusercontent.com/schmuziger/Final-Data-Project/master/spain_data.csv")
+end.rcode-->
 
-HIGH LEVELS OF YOUTH UNEMPLOYMENT
+<p>HIGH LEVELS OF YOUTH UNEMPLOYMENT</p>
 
-```{r unemployment}
+<!--begin.rcode fig.width=7, fig.height=6
 d2004 <- subset(Spain_data, Year <= 2004)
 d2008 <- subset(Spain_data, Year <= 2008 & Year>2004)
 d2011 <- subset(Spain_data, Year <= 2011 & Year>2008)
@@ -39,16 +36,14 @@ geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour
  scale_color_discrete(labels = Spain_data$Year) + 
  theme(legend.position = "bottom", legend.key = element_rect(size = 5, fill = 'white', colour = 'white'), legend.key.size = unit(5.0, 'lines'), axis.title.y=element_text(margin=margin(10,10,0,10))) + theme(axis.title.x = element_text(size = 15, vjust=-.2)) +
  theme(axis.title.y = element_text(size = 15, vjust=0.3))
-```
+end.rcode-->
 
-Column {data-width=350}
------------------------------------------------------------------------
+<b>DOES TURNOUT AND UNEMPLOYMENT CHANGE BETWEEN REGIONS?</b>
 
-DOES TURNOUT AND UNEMPLOYMENT CHANGE BETWEEN REGIONS?
+The following graph shows a preliminary explotation of the relationship between our main variables. A priori it seems that higher youth unemployment is correlated with lower levels of turnout, contrary to our hypothesis. However, the graph shows that in some regions this relationship is reversed. The following sections of the paper would explore this relationship deeply. 
 
-The following graph shows a preliminary explotation of the relationship between our main variables. A priori it seems that higher youth unemployment is correlated with lower levels of turnout, contrary to our hypothesis. However, the graph shows that in some regions this relationship is reversed. The following sections of the paper would explore this relationship deeply.
 
-```{r regions}
+<!--begin.rcode
 p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
 p1<-p + geom_point(aes(colour = Region_code)) 
 p3 <- p1 + labs(y="Turnout", x= "Youth Unemployment")
@@ -57,4 +52,7 @@ p5 <- p3 + scale_y_continuous("Voter Turnout",
                               breaks=seq(0.4, 0.85, 0.2)) + stat_smooth(method = 'lm', aes(colour = Region_code), se = FALSE)
 p6<-p5 + theme(axis.text.x = element_blank())
 p6
-```
+end.rcode-->
+
+</body>
+</html>
