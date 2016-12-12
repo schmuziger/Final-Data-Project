@@ -122,7 +122,7 @@ We consider this study is very interesting in the light of the recent changes in
 
 Literature on voter behavior tend to rely mainly on the incumbency-oriented hypothesis, which claims that voters tend to reward or punish government in elections according to the economic performance of the country @norpoth1996presidents. In that sense, objective or subjective economic indicators such as unemployment rates, inflation, growth and other related aspects have the potential to explain part of the variance in government support @lewis2000economic.  
 
-Citizen dissatisfaction with economic performance substantially increases the possibility to vote against the incumbent. While some authors believe that the state of employment does not have a detectable effect upon voting behavior `[@stigler1973genera`] others have reasons to believe that unemployment rates play a role depending on the political identification of the incumbent party, with left-wing governments suffering more from hign unemployment rates than right-wing governments @dassonneville2013economic. In that view, unemployment can alter voter behavior of already mobilized voters, but not mobilize additional people that are not politically active.
+Citizen dissatisfaction with economic performance substantially increases the possibility to vote against the incumbent. While some authors believe that the state of employment does not have a detectable effect upon voting behavior `[@stigler1973genera]` others have reasons to believe that unemployment rates play a role depending on the political identification of the incumbent party, with left-wing governments suffering more from hign unemployment rates than right-wing governments @dassonneville2013economic. In that view, unemployment can alter voter behavior of already mobilized voters, but not mobilize additional people that are not politically active.
 
 While many studies focus on this incumbency oriented approach, there is surprinsingly little research investigating exactly through which channels the economic aspects influences voter participation. Contrary to the general consensus emerging from existing research, some authors show that higher levels of unemployment stimulate more people to vote @burden2012unemployment. This research using the U.S. case shows that the turnout gap between the employed and unemployed shrinks as state unemployment increases, suggesting that unemployment statistics invigorates rather than suppress electoral participation.
 
@@ -251,6 +251,17 @@ plot(Reg1,which=1)
 
 ```{r basic4, results='asis', tidy=TRUE, echo=FALSE}
 plot(Reg1,which=2)
+```
+
+@jimenez2015electoral mentions an interesting fact about the Spanish political system. He analyses the impact of the dual identity of Spanish citizens as a potential influence on voter behavior. Spain has many autonomous regions that have co-official languages and in a stronger or weaker way, affect the feeling of belonging to the country. This can be reflected in voter turnout, especially when we consider general elections for the national parliament. In that sense, we want to check whether this explains the variability of the impact of youth unemployment on turnout, depending on the feeling of attachment. 
+
+```{r two groups}
+# creating a dummy for region
+
+Spain_data["Attachment"] <- 1 
+
+Spain_data$Attachment <- ifelse(Spain_data$Region == 'Catalunya', 0, ifelse(Spain_data$Region == 'Galicia', 0, ifelse(Spain_data$Region == 'Baleares', 0, ifelse(Spain_data$Region == 'Canarias', 0, ifelse(Spain_data$Region == 'Pais_Vasco', 0, ifelse(Spain_data$Region == 'Ceuta', 0, ifelse(Spain_data$Region == 'Melilla', 0, 1)))))))
+
 ```
 
 
