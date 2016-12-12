@@ -9,7 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ```{r library, message=FALSE, echo=FALSE, include=FALSE}
 library(pxR)
 library(MicroDatosEs)
