@@ -4,6 +4,12 @@ author: "Rafael Goldzweig & Rita Alvarez"
 date: "12 Dezember 2016"
 output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
 ```{r library, message=FALSE, echo=FALSE, include=FALSE}
 library(pxR)
 library(MicroDatosEs)
