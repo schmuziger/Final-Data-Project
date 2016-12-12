@@ -34,6 +34,7 @@ library(ggplot2)
 library(pastecs)
 library(stargazer)
 library(gplots)
+#library(predictmeans)
 ```
 
 ```{r setup, message=FALSE, echo=FALSE, include=FALSE}
@@ -116,7 +117,7 @@ Voter turnout is the most common measurement of participation in a democracy. Ma
 
 We are also interested to see if youth unemployment mobilize voters with more intensity in regions where the rate of young people is higher. If this is the case, this effect can be explained by three different sources: because older people feel the resposability to vote more given the amount of young people unemployed, because young people go to vote more or because of a combination of the two factors above.
 
-We consider this study is very interesting in the light of the recent changes in the political system of the country. Spain went from a party system traditionally dominated by the \textit{PP} (center-right) and the \textit{PSOE} (center-left) to a multy party system where the \textit{Podemos} (left) and \textit{Ciudadanos} (liberal/center-right) reached the national parliament with a significant vote share for the first time in the recent national elections of 2015. \textit{Ciudadanos} is a party that was only present in the Catalan political life at its foundation. In 2008 they run in the general elections for the first time. \textit{Podemos} was founded in 2014 and run in the general elections for the first time in 2015.  Our \textbf{hypothesis} is that given the high youth unemployment rates, young people would involve more in the political life. Also, as the new parties appleal more to young voters this could cause the change in the party system.
+We consider this study is very interesting in the light of the recent changes in the political system of the country. Spain went from a party system traditionally dominated by the \textit{PP} (center-right) and the \textit{PSOE} (center-left) to a multy party system where the \textit{Podemos} (left) and \textit{Ciudadanos} (liberal/center-right) reached the national parliament with a significant vote share for the first time in the recent national elections of 2015. \textit{Ciudadanos} is a party that was only present in the Catalan political life at its foundation. In 2008 they run in the general elections for the first time. \textit{Podemos} was founded in 2014 and run in the general elections for the first time in 2015.  Our \textbf{hypothesis} is that given the high youth unemployment rates, voters and potentially young voters, would be more involved in the political life. Also, as the new parties appleal more to young voters this could cause the change in the party system.
 
 # LITERATURE REVIEW
 
@@ -185,7 +186,7 @@ geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour
  theme(axis.title.y = element_text(size = 15, vjust=0.3))
 ```
 
-Other independent variables include \textbf{GDP per capita} and \textbf{percentage of university graduates}. The GDP per capita comes from a dataset from Expansion and the percentage of university graduates come from Eurostat.
+Other independent variables include \textbf{GDP per capita} and \textbf{percentage of university graduates}. The GDP per capita comes from a dataset from Expansion and the percentage of university graduates come from Eurostat. We think that both variables can be correlated to youth unemployment and voter tunout. Therefore, not including them our ressults could be affected by ommited variable bias.
 
 ##Relationship between voter turnout and youth unemloyment
 
@@ -205,25 +206,139 @@ p6
 
 
 # STATISTICAL MODEL AND RESULTS
-
+## The model
 To test our hypothesis that turnout is positively impacted by higher youth unemployment rates we propose the following model:
 
 $Turnout_{i,t}=\beta_0+\beta_1 Youth\ Unemployment_{i,t}+\beta_2 \% Annual\ GDP \ growth + \beta_3 \% Tertiary\ Education + \delta_i + \lambda_t +  u_{i,t}$
 
 where $i$ represents each of the 19 regions of Spain, $t$ represent the most recent years where general elections where held: 2004, 2008, 2011 and 2015, $\delta_i$ represents regional fixed effects and $\lambda_t$ represents time fixed effects. 
 
+Also, from our descriptive statistics we saw that the regions that have lower voter turnout in the general election were the ones probably feeling less attached to the central government: Ceuta, Melilla, Canarias, Baleares, Cataluña, Pais Vasco and Galicia. In this context, @jimenez2015electoral points out this interesting fact about the Spanish political system. He analyses the impact of the dual identity of Spanish citizens as a potential influence on voter behavior. Spain has three autonomous regions that have co-official languages (Cataluña, Pais Vasco and Galicia) and in a stronger or weaker way, affect the feeling of attachment to the central administration. This can be reflected in voter turnout, especially when we consider general elections for the national parliament. Based on this theory, and extending it to the regions that are outside the Iberian Peninsula (Islas Canarias, Islas Baleares, Ceuta and Melilla), we want to check whether this changes the impact of youth unemployment on turnout, depending on the feeling of attachment. We will perform then the following regression analysis with a similar specification as above:
+
+$Turnout_{i,t}=\beta_0+\beta_1 Youth\ Unemployment_{i,t}+\beta_2 \% Annual\ GDP \ growth + \beta_3 \% Tertiary\ Education + \beta_4 \ Attachment+  \delta_i + \lambda_t +  u_{i,t}$
+
+where Attachment is a dummy variable equal to 1 for all the regions except Cataluña, Pain Vasco, Galicia, Islas Canarias and Islas Baleares.
+
+## Results
+
+From our results we can see that youth unemployment impacts negatively on voter tunrout. This is, the bigger the unemployment rate, the lower the voter turnout. This variable is statistically significant in the three models showed at, at least, 5\% significance level although no other variable in our model are statistically significant. Our variable \textit{Attachment} is not statistically significant either showing that the feeling of belonging do not change the impact of youth unemployment on voter turnout. 
+
+```{r two groups, results='asis', tidy=TRUE, echo=FALSE}
+# creating a dummy for region
+
+Spain_data["Attachment"] <- 1 
+
+Spain_data$Attachment <- ifelse(Spain_data$Region == 'Catalunya', 0, ifelse(Spain_data$Region == 'Galicia', 0, ifelse(Spain_data$Region == 'Baleares', 0, ifelse(Spain_data$Region == 'Canarias', 0, ifelse(Spain_data$Region == 'Pais_Vasco', 0, ifelse(Spain_data$Region == 'Ceuta', 0, ifelse(Spain_data$Region == 'Melilla', 0, 1)))))))
+
+```
+
 ```{r basic1, results='asis', tidy=TRUE, echo=FALSE}
 Reg1 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates, data = Spain_data)
 ```
 
 ```{r basic2, results='asis', tidy=TRUE, echo=FALSE}
-Reg2 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates + Region, data = Spain_data)
+Reg2 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates + eight + eleven + fifteen + Region, data = Spain_data)
 ```
 
-```{r basic6, results='asis', tidy=TRUE, echo=FALSE}
-Spain_data2<- Spain_data[!Spain_data$Region == "Ceuta", ]
-Spain_data_no_out<- Spain_data2[!Spain_data2$Region == "Melilla", ]
+```{r basic3, results='asis', tidy=TRUE, echo=FALSE}
+Reg3 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates + Attachment + eight + eleven + fifteen + Region, data = Spain_data)
 ```
+
+```{r stargazer1, results='asis', eval=FALSE, tidy=TRUE, echo=FALSE, header=FALSE}
+stargazer(Reg1, Reg2, Reg3, 
+          title = "Basic Regression",
+          column.labels=c("Basic","Fixed effects", "Fixed effects + regional differentiation"),
+          dep.var.labels = "Voter turnout in general elections",
+          covariate.labels = c("Youth Unemloyment", "GDP per capita", "Percentage of University graduates", "Attachment", "Year 2008", "Year 2011", "Year 2015"),
+          header=FALSE, float=FALSE, no.space=TRUE)
+```
+
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & \multicolumn{3}{c}{Voter turnout in general elections} \\ 
+ & Basic & FE & FE + attachment\\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
+\hline \\[-1.8ex] 
+ Youth Unemloyment & $-$0.002$^{***}$ & $-$0.001$^{**}$ & $-$0.001$^{**}$ \\ 
+  & (0.001) & (0.001) & (0.001) \\ 
+  GDP per capita & $-$0.00000 & $-$0.00000 & $-$0.00000 \\ 
+  & (0.00000) & (0.00000) & (0.00000) \\ 
+  Percentage University graduates & 0.117 & $-$0.080 & $-$0.080 \\ 
+  & (0.106) & (0.186) & (0.186) \\ 
+  Attachment &  &  & $-$0.012 \\ 
+  &  &  & (0.052) \\ 
+  Year 2008 &  & 0.015 & 0.015 \\ 
+  &  & (0.020) & (0.020) \\ 
+  Year 2011 &  & 0.014 & 0.014 \\ 
+  &  & (0.026) & (0.026) \\ 
+  Year 2015 &  & 0.035 & 0.035 \\ 
+  &  & (0.030) & (0.030) \\ 
+  Regional fixed effects & NO & YES & YES \\ 
+  Constant & 0.783$^{***}$ & 0.872$^{***}$ & 0.883$^{***}$ \\ 
+  & (0.045) & (0.083) & (0.128) \\ 
+ \hline \\[-1.8ex] 
+Observations & 76 & 76 & 76 \\ 
+R$^{2}$ & 0.264 & 0.935 & 0.935 \\ 
+Adjusted R$^{2}$ & 0.234 & 0.904 & 0.904 \\ 
+Residual Std. Error & 0.057 (df = 72) & 0.020 (df = 51) & 0.020 (df = 51) \\ 
+F Statistic & 8.620$^{***}$ (df = 3; 72) & 30.586$^{***}$ (df = 24; 51) & 30.586$^{***}$ (df = 24; 51) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+
+##Outliers
+When performed an outliers analysis in addition to our regression analysis to check if our results could be driven by some data points that are unusual for turnout given the control variables used. In the graph below all the the observations whose absolute value is larger than 2 appear to be outliers. Those observations are Melilla 2008, Cataluña 2004, Pais Vasco 2004 and Pais Vasco 2008. We deleted these observations and run our analysis again. However the results didn't change much and we decided to show them only in the annex.
+
+```{r , results='asis', tidy=TRUE, echo=FALSE}
+
+ols.model1<-lm(formula =
+Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates + eight + eleven + fifteen + Region, data = Spain_data)
+
+avg.mod1<-ncol(Spain_data$Unempl_rate_less25)/nrow(Spain_data$Unempl_rate_less25)
+
+plot(rstudent(ols.model1), main="OLS Diagnosis outliers", xlab="index", ylab="Standarized residuals")
+text(rstudent(ols.model1), labels=Spain_data$Region_code, cex= 0.7, pos=2)
+abline(h=2)
+abline(h=-2)
+
+```
+
+
+```{r basic6, results='asis', tidy=TRUE, echo=FALSE}
+Spain_data2<- Spain_data[!Spain_data$Region == "Melilla"|!Spain_data$Year == 2008, ]
+Spain_data3<- Spain_data2[!Spain_data2$Region == "Catalunya"|!Spain_data2$Year == 2004, ]
+Spain_data4<- Spain_data3[!Spain_data3$Region == "Pais_Vasco"|!Spain_data3$Year == 2004, ]
+Spain_data_no_out<- Spain_data4[!Spain_data4$Region == "Pais_Vasco"|!Spain_data4$Year == 2008, ]
+```
+
+
+```{r basic11, results='asis', tidy=TRUE, echo=FALSE}
+Reg11 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates, data = Spain_data_no_out)
+```
+
+```{r basic21, results='asis', tidy=TRUE, echo=FALSE}
+Reg21 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates + eight + eleven + fifteen + Region, data = Spain_data_no_out)
+```
+
+```{r basic31, results='asis', tidy=TRUE, echo=FALSE}
+Reg31 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates + Attachment + eight + eleven + fifteen + Region, data = Spain_data_no_out)
+```
+
+```{r stargazer11, results='asis', eval=FALSE, tidy=TRUE, echo=FALSE, header=FALSE}
+stargazer(Reg11, Reg21, Reg31, 
+          title = "Basic Regression",
+          column.labels=c("Basic","Fixed effects", "Fixed effects + regional differentiation"),
+          dep.var.labels = "Voter turnout in general elections",
+          covariate.labels = c("Youth Unemloyment", "GDP per capita", "Percentage of University graduates", "Attachment", "Year 2008", "Year 2011", "Year 2015"),
+          header=FALSE, float=FALSE, no.space=TRUE)
+```
+
+
+
 
 ```{r basic5, results='asis', tidy=TRUE, echo=FALSE}
 Reg3 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates, data = Spain_data_no_out)
@@ -233,7 +348,7 @@ Reg3 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates, data =
 Reg4 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates + Region, data = Spain_data_no_out)
 ```
 
-```{r stargazer1, results='asis', tidy=TRUE, echo=FALSE, header=FALSE}
+```{r stargazer2, results='asis',eval=FALSE, tidy=TRUE, echo=FALSE, header=FALSE}
 stargazer(Reg1, Reg2, Reg4,
           title = "Basic Regression",
           column.labels=c("Basic","Fixed effects"),
@@ -245,30 +360,60 @@ stargazer(Reg1, Reg2, Reg4,
 
 
           
-```{r basic3, results='asis', tidy=TRUE, echo=FALSE}
+```{r basic10, results='asis', tidy=TRUE, echo=FALSE}
 plot(Reg1,which=1)
 ```
 
-```{r basic4, results='asis', tidy=TRUE, echo=FALSE}
+```{r , results='asis', tidy=TRUE, echo=FALSE}
 plot(Reg1,which=2)
-```
-
-@jimenez2015electoral mentions an interesting fact about the Spanish political system. He analyses the impact of the dual identity of Spanish citizens as a potential influence on voter behavior. Spain has many autonomous regions that have co-official languages and in a stronger or weaker way, affect the feeling of belonging to the country. This can be reflected in voter turnout, especially when we consider general elections for the national parliament. In that sense, we want to check whether this explains the variability of the impact of youth unemployment on turnout, depending on the feeling of attachment. 
-
-```{r two groups}
-# creating a dummy for region
-
-Spain_data["Attachment"] <- 1 
-
-Spain_data$Attachment <- ifelse(Spain_data$Region == 'Catalunya', 0, ifelse(Spain_data$Region == 'Galicia', 0, ifelse(Spain_data$Region == 'Baleares', 0, ifelse(Spain_data$Region == 'Canarias', 0, ifelse(Spain_data$Region == 'Pais_Vasco', 0, ifelse(Spain_data$Region == 'Ceuta', 0, ifelse(Spain_data$Region == 'Melilla', 0, 1)))))))
-
 ```
 
 
 # CONCLUSIONS
+In this paper we wanted to prove our hypothesis that high youth unemployment rates would mobilize more voters of all ages but potentially young voters. Since the new parties in the Spanish political sphere \textit{Ciudadanos} and \textit{Podemos} appeal more to young voters we though that higher mobilization of young people could cause the change in the party system. Our results showed, however, that higher levels of youth unemployment are correlated with lower levels of turnout. Although our results are not what we expected they are in line with one part of the literature on voter turnout that says that high levels of unemployment make voters feel unhappy and detached with politics and stop participating in the social political life. 
 
-iso.expand("ES")
-map(regions=sov.expand("Spain"))
+Further research with this same dataset would include the effect of young unemployemnt on casting blank or invalid votes. 
 
+## Limitations
+Our main limitation for this research is that we couldn't get data out youth voter turnout. Unfortunately this data is not available for Spain. Our research hypothesis would be better proved if we had this variable.
 
-#BIBLIOGRAPHY
+# BIBLIOGRAPHY
+
+# ANNEX
+
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & \multicolumn{3}{c}{Voter turnout in general elections} \\ 
+ & Basic & FE & FE + attachment \\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
+\hline \\[-1.8ex] 
+ Youth Unemloyment & $-$0.002$^{***}$ & $-$0.001$^{***}$ & $-$0.001$^{***}$ \\ 
+  & (0.001) & (0.0005) & (0.0005) \\ 
+  GDP per capita & 0.00000 & 0.00000 & 0.00000 \\ 
+  & (0.00000) & (0.00000) & (0.00000) \\ 
+  Percentage of University graduates & 0.093 & $-$0.089 & $-$0.089 \\ 
+  & (0.107) & (0.126) & (0.126) \\ 
+  Attachment &  &  & 0.054 \\ 
+  &  &  & (0.040) \\ 
+  Year 2008 &  & $-$0.006 & $-$0.006 \\ 
+  &  & (0.014) & (0.014) \\ 
+  Year 2011 &  & $-$0.002 & $-$0.002 \\ 
+  &  & (0.017) & (0.017) \\ 
+  Year 2015 &  & 0.016 & 0.016 \\ 
+  &  & (0.020) & (0.020) \\ 
+  Regional fixed effects & NO & YES & YES \\ 
+  Constant & 0.779$^{***}$ & 0.768$^{***}$ & 0.714$^{***}$ \\ 
+  & (0.045) & (0.055) & (0.088) \\ 
+ \hline \\[-1.8ex] 
+Observations & 72 & 72 & 72 \\ 
+R$^{2}$ & 0.287 & 0.974 & 0.974 \\ 
+Adjusted R$^{2}$ & 0.256 & 0.961 & 0.961 \\ 
+Residual Std. Error & 0.057 (df = 68) & 0.013 (df = 47) & 0.013 (df = 47) \\ 
+F Statistic & 9.130$^{***}$ (df = 3; 68) & 73.482$^{***}$ (df = 24; 47) & 73.482$^{***}$ (df = 24; 47) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
