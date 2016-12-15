@@ -1,7 +1,7 @@
 ---
 title: "Youth unemployment and turnout in Spain"
 author: "Rafael Goldzweig & Rita Alvarez Martinez"
-date: "December 2, 2016"
+date: "December 16, 2016"
 output:
   pdf_document:
     number_sections: yes
@@ -42,98 +42,34 @@ library(gplots)
 rm(list=ls())
 
 # set WD
-#setwd('C:/Users/Rita/Desktop/Final Data Project')
+setwd('C:/Users/Schmuziger/Desktop/Final Data Project')
 ```
 
-```{r turnout data, results='asis', tidy=TRUE, echo=FALSE}
-# Read Turnout data
-
-Turnout2004_2008_2011_2015 <- read_excel("C:/Users/Rita/Desktop/Assignment-3/ElectionsResult_2015_2011_2008_2004.xlsx", col_names = TRUE)
-```
-
-```{r unemployment data, results='asis', tidy=TRUE, echo=FALSE}
-# Read Unemployment data
-
-YouthUnemployment2004_2015 <- read_excel("C:/Users/Rita/Desktop/Assignment-3/YouthUnemployment2015_2011_2008_2004.xlsx", col_names = TRUE)
-```
-
-```{r controls, results='asis', tidy=TRUE, echo=FALSE}
-# Read control variables data
-
-Controlvariables <- read_excel("C:/Users/Rita/Desktop/Assignment-3/Controlvariables.xlsx", col_names = TRUE)
-
-```
-
-```{r dataset1, results='asis', tidy=TRUE, echo=FALSE}
-# Merge the dataset of electoral results with the dataset of unemployment rates. Change columns as numeric and clean one column
-
-Spain_data_1 <- merge(Turnout2004_2008_2011_2015, YouthUnemployment2004_2015, by=c("Region","Year"), all=TRUE)
-```
-
-```{r dataset2, results='asis', tidy=TRUE, echo=FALSE}
-# Merge the dataset of electoral results with the dataset of controls
-
-Spain_data <- merge(Spain_data_1, Controlvariables, by=c("Region","Year"), all=TRUE)
-```
-
-```{r adjustments, results='asis', tidy=TRUE, echo=FALSE}
-#Final adjustments.  Change columns as numeric and clean one column
-
-Spain_data$Unempl_rate_total<- as.numeric(Spain_data$Unempl_rate_total)
-Spain_data$Unempl_rate_less25 <- as.numeric(Spain_data$Unempl_rate_less25)
-Spain_data$Unempl_rate_16_19 <- as.numeric(Spain_data$Unempl_rate_16_19)
-Spain_data$Unempl_rate_20_24 <- as.numeric(Spain_data$Unempl_rate_20_24)
-
-Spain_data <- Spain_data[, -c(7,7)]
-```
-
-```{r dataset, results='asis', tidy=TRUE, echo=FALSE}
-
-# Create region code
-
-Spain_data$Region_code <- ifelse(Spain_data$Region == 'Extremadura', 'EX', ifelse(Spain_data$Region == 'Castilla_La_Mancha', 'CM', ifelse(Spain_data$Region == 'Murcia', 'MU', ifelse(Spain_data$Region == 'Canarias', 'IC', ifelse(Spain_data$Region == 'Galicia', 'GA', ifelse(Spain_data$Region == 'Comunitat_Valenciana', 'CV', ifelse(Spain_data$Region == 'Melilla', 'ME', ifelse(Spain_data$Region == 'Asturias', 'AS', ifelse(Spain_data$Region == 'Ceuta', 'CE', ifelse(Spain_data$Region == 'Castilla_y_Leon', 'CL', ifelse(Spain_data$Region == 'Andalucia', 'AN', ifelse(Spain_data$Region == 'Cantabria', 'CA', ifelse(Spain_data$Region == 'Baleares', 'IB', ifelse(Spain_data$Region == 'Aragon', 'AR', ifelse(Spain_data$Region == 'Catalunya', 'CT', ifelse(Spain_data$Region == 'Madrid', 'MA', ifelse(Spain_data$Region == 'Navarra', 'NV', ifelse(Spain_data$Region == 'Pais_Vasco', 'PV', ifelse(Spain_data$Region == 'La_Rioja', 'LR', NA)))))))))))))))))))
-
-region_code <- c("AN", "AR", "AS", "IB", "IC", "CA", "CM", "CL", "CT", "CE", "CV", "EX", "GA", "LR", "MA", "ME", "MU", "NV", "PV")
-
-region_name <- c("Andalucia", "Aragon", "Asturias", "Baleares", "Canarias", "Cantabria", "Castilla_La_Mancha", "Castilla_y_Leon", "Catalunya", "Ceuta", "Comunitat_Valenciana", "Extremadura", "Galicia", "La_Rioja", "Madrid", "Melilla", "Murcia", "Navarra", "Pais_Vasco")
-```
-
-```{r fix, results='asis', tidy=TRUE, echo=FALSE}
-# Create one dummy for each year
-Spain_data["four"] <- as.numeric(Spain_data$Year == 2004)
-Spain_data["eight"] <- as.numeric(Spain_data$Year == 2008)
-Spain_data["eleven"] <- as.numeric(Spain_data$Year == 2011)
-Spain_data["fifteen"] <- as.numeric(Spain_data$Year == 2015)
-```
-
-```{r exp, results='asis', tidy=TRUE, echo=FALSE}
-# Exporting data
-write.csv(Spain_data, "spain_data.csv", row.names=F)
+```{r data, results='asis', tidy=TRUE, echo=FALSE}
+Spain_data <- read.csv("https://raw.githubusercontent.com/schmuziger/Final-Data-Project/master/spain_data.csv")
 ```
 
 # INTRODUCTION AND RESEARCH QUESTION
 
-Voter turnout is the most common measurement of participation in a democracy. Many authors have studied what are the determinants of voter turnout (see @Geys2006637 for a comprehensive summary of the recent literature on voter turnout). Among the determinants of tunout we can find age, race/ethnicity, gender, socio-economic status and political/economical situation of the country. In this broad spectrum of variables that influence participation of voters in elections, this article will focus specifically on whether youth unemployment (unemployment of people ranging between 16 and 24 years old) has an impact on turnout in the case of Spain. Youth unemployment has been a pressing issue in the country in the period of 2000-2016, when the rates were not lower than 17.5\% throughout the whole period and a maximum of 55\% was achieved in the first months of 2014 (Source: Eurostat).
+Voter turnout is the most common measurement of participation in a democracy. Many authors have studied what are the determinants of voter turnout (see @Geys2006637 for a comprehensive summary of the recent literature on voter turnout). Among the determinants of tunout we can find age, race/ethnicity, gender, socio-economic status and political/economical situation of the country. In this broad spectrum of variables that influence participation of voters in elections, this article will focus specifically on whether youth unemployment (unemployment of people with less than 25 years old) has an impact on turnout in the case of Spain. Youth unemployment has been a pressing issue in the country in the period of 2000-2016, when the rates were not lower than 17.5\% throughout the whole period and a maximum of 55\% was achieved in the first months of 2014 (Source: Eurostat).
 
-We are also interested to see if youth unemployment mobilize voters with more intensity in regions where the rate of young people is higher. If this is the case, this effect can be explained by three different sources: because older people feel the resposability to vote more given the amount of young people unemployed, because young people go to vote more or because of a combination of the two factors above.
-
-We consider this study is very interesting in the light of the recent changes in the political system of the country. Spain went from a party system traditionally dominated by the \textit{PP} (center-right) and the \textit{PSOE} (center-left) to a multy party system where the \textit{Podemos} (left) and \textit{Ciudadanos} (liberal/center-right) reached the national parliament with a significant vote share for the first time in the recent national elections of 2015. \textit{Ciudadanos} is a party that was only present in the Catalan political life at its foundation. In 2008 they run in the general elections for the first time. \textit{Podemos} was founded in 2014 and run in the general elections for the first time in 2015.  Our \textbf{hypothesis} is that given the high youth unemployment rates, voters and potentially young voters, would be more involved in the political life. Also, as the new parties appleal more to young voters this could cause the change in the party system.
+We consider this study is very interesting in the light of the recent changes in the political system of the country. Spain went from a party system traditionally dominated by the \textit{PP} (center-right) and the \textit{PSOE} (center-left) to a multy party system where the \textit{Podemos} (left) and \textit{Ciudadanos} (liberal/center-right) reached the national parliament with a significant vote share for the first time in the recent national elections of 2015. \textit{Ciudadanos} is a party that was only present in the Catalan political context at its foundation. In 2008 they run in the general elections for the first time. \textit{Podemos} was founded in 2014 and run in the general elections for the first time in 2015.  Our \textbf{hypothesis} is that given the high youth unemployment rates, voters and potentially young voters, would be more involved in the political life. Also, as the new parties appeal more to young voters, we expect that this could be one of the causes for the change in the party system.
 
 # LITERATURE REVIEW
 
-Literature on voter behavior tend to rely mainly on the incumbency-oriented hypothesis, which claims that voters tend to reward or punish government in elections according to the economic performance of the country @norpoth1996presidents. In that sense, objective or subjective economic indicators such as unemployment rates, inflation, growth and other related aspects have the potential to explain part of the variance in government support @lewis2000economic.  
+Literature on voter behavior tend to rely mainly on the incumbency-oriented hypothesis, which claims that voters tend to reward or punish government in elections according to the economic performance of the country [@norpoth1996presidents]. In that sense, objective or subjective economic indicators such as unemployment rates, inflation, growth and other related aspects have the potential to explain part of the variance in government support [@lewis2000economic].  
 
-Citizen dissatisfaction with economic performance substantially increases the possibility to vote against the incumbent. While some authors believe that the state of employment does not have a detectable effect upon voting behavior `[@stigler1973genera]` others have reasons to believe that unemployment rates play a role depending on the political identification of the incumbent party, with left-wing governments suffering more from hign unemployment rates than right-wing governments @dassonneville2013economic. In that view, unemployment can alter voter behavior of already mobilized voters, but not mobilize additional people that are not politically active.
+Citizen dissatisfaction with economic performance substantially increases the possibility to vote against the incumbent. While some authors believe that the state of employment does not have a detectable effect upon voting behavior [@stigler1973general] others have reasons to believe that unemployment rates play a role depending on the political identification of the incumbent party, with left-wing governments suffering more from high unemployment rates than right-wing governments [@dassonneville2013economic]. In that view, unemployment can alter voter behavior of already mobilized voters, but not mobilize additional people that are not politically active.
 
-While many studies focus on this incumbency oriented approach, there is surprinsingly little research investigating exactly through which channels the economic aspects influences voter participation. Contrary to the general consensus emerging from existing research, some authors show that higher levels of unemployment stimulate more people to vote @burden2012unemployment. This research using the U.S. case shows that the turnout gap between the employed and unemployed shrinks as state unemployment increases, suggesting that unemployment statistics invigorates rather than suppress electoral participation.
+While many studies focus on the incumbency oriented approach, there is surprisingly little research investigating exactly through which channels the economic aspects influence voter participation. Contrary to the general consensus emerging from existing research, some authors show that higher levels of unemployment stimulate more people to vote [@burden2012unemployment]. This research using the U.S. case shows that the turnout gap between the employed and unemployed shrinks as state unemployment increases, suggesting that unemployment statistics invigorates rather than suppress electoral participation.
 
-In that sense, individuals perceive job loss as a personal problem when the unemployment rate is low and a social problem when the unemployment rate is high. Therefore, job loss can be a mobilizing experience when the unemployment rate is high. In particular, "unemployed Americans' political behavior is meaningfully influenced by unemployment context to an extent that we do not observe among gainfully employed Americans" @incantalupo2011effects. This finding is particularly interesting in the context of our research. Although our study focuses on the Spanish case, we do not expect this kind of behavior to be completely different than the U.S case and this could mean that young unemployed people, in a high unemployment context, would show higher turnout in the election day affecting the political outcome. 
+In that sense, individuals perceive job loss as a personal problem when the unemployment rate is low and a social problem when the unemployment rate is high. Therefore, job loss can be a mobilizing experience when the unemployment rate is high. In particular, "unemployed Americans' political behavior is meaningfully influenced by unemployment context to an extent that we do not observe among gainfully employed Americans" [@incantalupo2011effects]. This finding is particularly interesting in the context of our research. Although our study focuses on the Spanish case, we do not expect this kind of behavior to be completely different than the U.S case and this could mean that young unemployed people, in a high unemployment context, would show higher turnout in the election day affecting the political outcome. 
 
-Data from the Spanish Center of Sociological Research collected before the general elections in the Spring of 2011, shows that 40.6\% of the Spanish young people (15 to 29 years old) felt distrust regarding politics. It is relevant to mention that a few weeks after the general election occured in 2011, the 15-M movement (March 15 movement) started. This movement was  a response to the inability of institutional politics to deal with the problems the country had been facing since 2009 and that speed up the appearance of new political parties into the National scene such as \textit{Podemos} or \textit{Ciudadanos}. 
+Data from the Spanish Center of Sociological Research collected before the general elections in the Spring of 2011, shows that 40.6\% of the Spanish young people (15 to 29 years old) felt distrust regarding politics. It is relevant to mention that a few weeks after the general election occured in 2011, the 15-M movement ("March 15" movement) started. This movement was  a response to the inability of the existing political class to deal with the problems the country had been facing since 2009. The 15-M played an important role in boosting new political parties such as \textit{Podemos} or \textit{Ciudadanos} into the National scene. 
 
-@anduiza2014mobilization point out a very interesting fact. They compared the profile of the 15-M protesters with the participants of other four major demonstrations happening in Spain during the crisis. They found that, while the four demonstrations had participants with high levels or membership to traditional organizations (between 60% and 100%) and organizations behind the demonstrations ranging from 10 to 43 years of existence, only 13% of the 15-M demonstrators were affiliated to any type of organization. Also, the organizations participating on the 15-M movements had less than 3 years of existence. The main argument is that the 15-M movements have the potential to mobilize a different profile of participants - in many cases, people traditionally less likely to have a big political participation. 
+@anduiza2014mobilization point out a very interesting fact. They compared the profile of the 15-M protesters with the participants of other four major demonstrations happening in Spain during the crisis. In the four major demonstrations, participants had high levels of membership to traditional organizations (between 60% and 100%) and organizations behind the demonstrations ranged from 10 to 43 years of existence. In the 15-M movement, only 13% of the demonstrators were affiliated to any type of organization, with the organizations participating on it having less than 3 years of existence. The main argument is that the 15-M movements had the potential to mobilize a different profile of participants - in many cases, people traditionally less likely to have a big political participation. 
 
-The party that benefitted the most out of this change was \textit{Podemos}. The party was founded in March 2014 by a manifesto broadcasted by Publico, an online Spanish newspaper, in the aftermath of the 15-M movement. With a left wing populist approach, it aimed to address the problems of inequality, unemployment and economic consequences of the European debt crisis. Soon after its creation, Podemos became the second largest political party in Spain by number of members after the People's Party (\textit{PP}) and received 21\% of the vote in the elections for the national parliament on December 2015, becoming the third largest party in the parliament in less than two years of existence. 
+The party that benefitted the most out of this change was \textit{Podemos}. Founded in March 2014 by a manifesto broadcasted by Publico, an online Spanish newspaper, Podemos managed to capitalize the political dissatisfaction in the aftermath of the 15-M movement. With a left wing populist approach, it aimed to address the problems of inequality, unemployment and economic consequences of the European debt crisis. Soon after its creation, Podemos became the second largest political party in Spain by number of members after the People's Party (\textit{PP}) and received 21\% of the vote in the elections for the national parliament on December 2015, becoming the third largest party in the parliament in less than two years of existence. 
 
 In this context, @jover2014political argues that the previous distrust feeling would make young Spanish voters to not to participate in the general elections of 2011. Hence, after the 15-M and with the appearance of new political options, the youth would mobilize and vote more in subsequent elections. In fact, 41.8\% of the young people answered in a survey that the 15-M movement had influenced them a lot to cast their vote in the regional elections in the Fall of 2011, months after the general elections. It is important to mention that @jover2014political shows data from self-reported surveys and does not prove causality between youth unemployment and turnout or between the appearance of new political parties and turnout. 
 
@@ -145,17 +81,15 @@ Our model will be tested using data from each of the regions of Spain in four di
 
 \textbf{Dependent variable}
 
-Our dependent variable is \textbf{voter turnout} in the Spanish general elections for the elections in 2004, 2008, 2001 and 2015. The elections in 2015 did not result in the formation of government due to a highly fragmented parlament and the general elections were reperated in 2016. However, we decided to use only the data from the 2015 election since in a second call people might turn or not to turn to vote for different reasons than in normal elections. The electoral data results from 2008 and 2011 came from the same source (Spain Public Administration), while the 2015 and 2004 (media) from one source each. All of them report the results from the elections according to the Spanish Ministry of Interior Affairs. We made use of a web-scrappable interface from the websites of our sources to import the results to build our dataset. For each of the 19 regions of Spain, we used a differet URL source to grab the data available online. This process was done simmilarly with the data from 2008, 2011 and 2015. We could not find any source online that provided a web scraping friendly version from the data of 2004, and we decided to create an excel file with it.
+Our dependent variable is \textbf{voter turnout} in the Spanish general elections for the elections in 2004, 2008, 2001 and 2015. The elections in 2015 did not result in the formation of government due to a highly fragmented parlament and the general elections were reperated in 2016. However, we decided to use only the data from the 2015 election since in a second call people might cast or not a vote for different reasons than in normal elections. The electoral data results from 2008 and 2011 came from the same source (Spain Public Administration), while the 2015 and 2004 (media) from one source each. All of them report the results from the elections according to the Spanish Ministry of Interior Affairs. We made use of a web-scrappable interface from the websites of our sources to import the results to build our dataset. For each of the 19 regions of Spain, we used a differet URL source to grab the data available online. This process was done simmilarly with the data from 2008, 2011 and 2015. We could not find any source online that provided a web scraping friendly version from the data of 2004, and we decided to create an spreasdsheet file with it.
 
-
-The following graph represents the turnout heterogeneity across regions during the years 2004 to 2015. The average turnout rate in Spain in these years was 72.02% which is a pretty high turnout rate for a developed country that does not have compulsory voting. However, voter tunout varies greatly among the different regions in Spain. Interestengly, the regions with lower median are Ceuta (CE) and Melilla (ME), two Autonomous cities belonging to Spain but geographically in Moroccan territory, Canarias (IC) and Baleares (IB), and Cataluña (CT), Pais Vasco (PV) and Galicia (GA), the three regions with historical nationalist feelings that have their own official language in addition to Spanish.This indicates that there could be an strong feeling to detachment from the central government and that is why their median turnout in general elections is lower.
-
+The following graph represents the turnout heterogeneity across regions during the years 2004 to 2015. The average turnout rate in Spain in these years was 72.02% which is a pretty high turnout rate for a developed country that does not have compulsory voting. However, voter tunout varies greatly among the different regions in Spain. Interestingly, the regions with lower median are Ceuta (CE) and Melilla (ME), two Autonomous cities belonging to Spain but geographically in Moroccan territory, Canarias (IC) and Baleares (IB) - islands -, and Cataluña (CT), Pais Vasco (PV) and Galicia (GA), the three regions with historical nationalist feelings that have their own official language in addition to Spanish. These factors indicates that there could be an strong feeling to detachment from the central government and that is why their median turnout in general elections is lower.
 
 ```{r plot1,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
 boxplot(Turnout ~ Region_code, main="Voter Turnout heterogeineity across regions", ylab ="Voter turnout (%)", xlab="Region", data=Spain_data)
 ``` 
  
- Voter tunout heterogeneity across years show that the median didn't change much but that 2011 was the year where people voted less. 
+Voter tunout heterogeneity across years show that the median did not change much but that 2011 was the year where people voted less. 
  
 ```{r plot2, fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE, warning=FALSE}
 boxplot(Turnout ~ Year, main="Voter turnout heterogeineity across years", ylab ="Voter turnout (%)", xlab="Year", data=Spain_data)
@@ -164,9 +98,9 @@ boxplot(Turnout ~ Year, main="Voter turnout heterogeineity across years", ylab =
 \textbf{Independent variables}
 
 
-Our main independent variable is \textbf{youth unemployment rate} in Spain. This data come from the Spanish National Statistics Institute (INE). The data is available by trimester for every year and every region. We imported the data directly from the website and transformed the database to fit the ones containing the electoral results. 
+Our main independent variable is \textbf{youth unemployment rate} in Spain. This data come from the Spanish National Statistics Institute (INE) and is available by trimester for every year and every region. We imported the data directly from the website and transformed the database to fit the ones containing the electoral results. 
 
-In the next graph we can observe that there was a drastic growth in young unemployment from 2004-2008 to 2011-2015 in every region in the country. The effects of the finantial crisis on youth unemployment started to be latent from 2009 ownwards and that explain this difference. Youth unemployment went from around 20% in most regions to nearly 50%. However, Ceuta (CE) and Melilla (ME) stand out for their extremely high youth unemployment rates both before and after the economic crisis.
+In the next graph we can observe that there was a drastic growth in young unemployment from 2004-2008 to 2011-2015 in every region in the country. The effects of the financial crisis on youth unemployment started to be latent from 2009 ownwards and that explain this difference. Youth unemployment went from around 20% in most regions to nearly 50%. Ceuta (CE) and Melilla (ME) stand out for their extremely high youth unemployment rates both before and after the economic crisis.
 
 ```{r plot5,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
 d2004 <- subset(Spain_data, Year <= 2004)
@@ -186,11 +120,11 @@ geom_line(data=d2015, aes(x=Region_code, y=Unempl_rate_less25, group = 1, colour
  theme(axis.title.y = element_text(size = 15, vjust=0.3))
 ```
 
-Other independent variables include \textbf{GDP per capita} and \textbf{percentage of university graduates}. The GDP per capita comes from a dataset from Expansion and the percentage of university graduates come from Eurostat. We think that both variables can be correlated to youth unemployment and voter tunout. Therefore, not including them our ressults could be affected by ommited variable bias.
+Other independent variables include \textbf{GDP per capita} and \textbf{percentage of university graduates}. The GDP per capita comes from a dataset from "Expansion" and the percentage of university graduates come from "Eurostat". We think that both variables can be correlated to youth unemployment and voter tunout. Therefore, not including them our results could be affected by ommited variable bias.
 
-##Relationship between voter turnout and youth unemloyment
+##Relationship between voter turnout and youth unemployment
 
-The following graph shows a preliminary explotation of the relationship between our main variables. A priori it seems that higher youth unemployment is correlated with lower levels of turnout, contrary to our hypothesis. However, the graph shows that in some regions this relationship is reversed. The following sections of the paper would explore this relationship deeply. 
+The following graph shows a preliminary exploration of the relationship between our main variables. A priori it seems that higher youth unemployment rates is correlated with lower levels of turnout, contrary to our hypothesis. However, the graph shows that in some regions this relationship is reversed. The following sections of the paper would explore this relationship deeply. 
 
 ```{r plot4,fig.width=10, fig.height=6, results='asis', tidy=TRUE, echo=FALSE}
 p <- ggplot(Spain_data, aes(Unempl_rate_less25, Turnout))
@@ -204,16 +138,15 @@ p6
 ``` 
 
 
-
 # STATISTICAL MODEL AND RESULTS
 ## The model
-To test our hypothesis that turnout is positively impacted by higher youth unemployment rates we propose the following model:
+To test our hypothesis that higher youth unemployment rates impact turnout positively, we propose the following model:
 
 $Turnout_{i,t}=\beta_0+\beta_1 Youth\ Unemployment_{i,t}+\beta_2 \% Annual\ GDP \ growth + \beta_3 \% Tertiary\ Education + \delta_i + \lambda_t +  u_{i,t}$
 
 where $i$ represents each of the 19 regions of Spain, $t$ represent the most recent years where general elections where held: 2004, 2008, 2011 and 2015, $\delta_i$ represents regional fixed effects and $\lambda_t$ represents time fixed effects. 
 
-Also, from our descriptive statistics we saw that the regions that have lower voter turnout in the general election were the ones probably feeling less attached to the central government: Ceuta, Melilla, Canarias, Baleares, Cataluña, Pais Vasco and Galicia. In this context, @jimenez2015electoral points out this interesting fact about the Spanish political system. He analyses the impact of the dual identity of Spanish citizens as a potential influence on voter behavior. Spain has three autonomous regions that have co-official languages (Cataluña, Pais Vasco and Galicia) and in a stronger or weaker way, affect the feeling of attachment to the central administration. This can be reflected in voter turnout, especially when we consider general elections for the national parliament. Based on this theory, and extending it to the regions that are outside the Iberian Peninsula (Islas Canarias, Islas Baleares, Ceuta and Melilla), we want to check whether this changes the impact of youth unemployment on turnout, depending on the feeling of attachment. We will perform then the following regression analysis with a similar specification as above:
+Also, from our descriptive statistics we saw that the regions that have lower voter turnout in the general election were the ones probably feeling less attached to the central government: Ceuta, Melilla, Canarias, Baleares, Cataluña, Pais Vasco and Galicia. In this context, @jimenez2015electoral points out an interesting fact about the Spanish political system. He analyses the impact of the dual identity of Spanish citizens as a potential influence on voter behavior. Spain has three autonomous regions that have co-official languages (Cataluña, Pais Vasco and Galicia) and in a stronger or weaker way, affect the feeling of attachment to the central administration. This can be reflected in voter turnout, especially when we consider general elections for the national parliament. Based on this theory, and extending it to the regions that are outside the Iberian Peninsula (Islas Canarias, Islas Baleares, Ceuta and Melilla), we want to check whether this changes the impact of youth unemployment on turnout, depending on the feeling of attachment. We will perform then the following regression analysis with a similar specification as above:
 
 $Turnout_{i,t}=\beta_0+\beta_1 Youth\ Unemployment_{i,t}+\beta_2 \% Annual\ GDP \ growth + \beta_3 \% Tertiary\ Education + \beta_4 \ Attachment+  \delta_i + \lambda_t +  u_{i,t}$
 
@@ -229,7 +162,6 @@ From our results we can see that youth unemployment impacts negatively on voter 
 Spain_data["Attachment"] <- 1 
 
 Spain_data$Attachment <- ifelse(Spain_data$Region == 'Catalunya', 0, ifelse(Spain_data$Region == 'Galicia', 0, ifelse(Spain_data$Region == 'Baleares', 0, ifelse(Spain_data$Region == 'Canarias', 0, ifelse(Spain_data$Region == 'Pais_Vasco', 0, ifelse(Spain_data$Region == 'Ceuta', 0, ifelse(Spain_data$Region == 'Melilla', 0, 1)))))))
-
 ```
 
 ```{r basic1, results='asis', tidy=TRUE, echo=FALSE}
@@ -291,10 +223,9 @@ F Statistic & 8.620$^{***}$ (df = 3; 72) & 30.586$^{***}$ (df = 24; 51) & 30.586
 \end{tabular} 
 
 ##Outliers
-When performed an outliers analysis in addition to our regression analysis to check if our results could be driven by some data points that are unusual for turnout given the control variables used. In the graph below all the the observations whose absolute value is larger than 2 appear to be outliers. Those observations are Melilla 2008, Cataluña 2004, Pais Vasco 2004 and Pais Vasco 2008. We deleted these observations and run our analysis again. However the results didn't change much and we decided to show them only in the annex.
+When performed an outliers analysis in addition to our regression analysis to check if our results could be driven by some data points that are unusual for turnout given the control variables used. In the graph below all the the observations whose absolute value is larger than 2 appear to be outliers. Those observations are Melilla 2008, Cataluña 2004, Pais Vasco 2004 and Pais Vasco 2008. We deleted these observations and run our analysis again. However the results did not change much and can be checked in the annex.
 
 ```{r , results='asis', tidy=TRUE, echo=FALSE}
-
 ols.model1<-lm(formula =
 Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates + eight + eleven + fifteen + Region, data = Spain_data)
 
@@ -304,7 +235,6 @@ plot(rstudent(ols.model1), main="OLS Diagnosis outliers", xlab="index", ylab="St
 text(rstudent(ols.model1), labels=Spain_data$Region_code, cex= 0.7, pos=2)
 abline(h=2)
 abline(h=-2)
-
 ```
 
 
@@ -338,8 +268,6 @@ stargazer(Reg11, Reg21, Reg31,
 ```
 
 
-
-
 ```{r basic5, results='asis', tidy=TRUE, echo=FALSE}
 Reg3 <- lm(Turnout ~ Unempl_rate_less25 + GDPpc + PctUniversityGraduates, data = Spain_data_no_out)
 ```
@@ -357,27 +285,15 @@ stargazer(Reg1, Reg2, Reg4,
           header=FALSE, float=FALSE, no.space=TRUE)
 ```
 
-
-
-          
-```{r basic10, results='asis', tidy=TRUE, echo=FALSE}
-plot(Reg1,which=1)
-```
-
-```{r , results='asis', tidy=TRUE, echo=FALSE}
-plot(Reg1,which=2)
-```
-
-
 # CONCLUSIONS
+
 In this paper we wanted to prove our hypothesis that high youth unemployment rates would mobilize more voters of all ages but potentially young voters. Since the new parties in the Spanish political sphere \textit{Ciudadanos} and \textit{Podemos} appeal more to young voters we though that higher mobilization of young people could cause the change in the party system. Our results showed, however, that higher levels of youth unemployment are correlated with lower levels of turnout. Although our results are not what we expected they are in line with one part of the literature on voter turnout that says that high levels of unemployment make voters feel unhappy and detached with politics and stop participating in the social political life. 
 
 Further research with this same dataset would include the effect of young unemployemnt on casting blank or invalid votes. 
 
 ## Limitations
-Our main limitation for this research is that we couldn't get data out youth voter turnout. Unfortunately this data is not available for Spain. Our research hypothesis would be better proved if we had this variable.
 
-# BIBLIOGRAPHY
+Our main limitation for this research is that we could not get data about youth voter turnout. Unfortunately this data is not available for Spain. Our research hypothesis would be better proved if we had this variable. Another interesting point would be to compare how high unemployment rates changed voter behavior, making people change their votes from traditional to newly created parties. This data is available only in voter intention pools that normally are built using distinct methodologies, making reliability a problem if we want to analyze a trend over time. 
 
 # ANNEX
 
@@ -417,3 +333,5 @@ F Statistic & 9.130$^{***}$ (df = 3; 68) & 73.482$^{***}$ (df = 24; 47) & 73.482
 \hline \\[-1.8ex] 
 \textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 \end{tabular} 
+
+# BIBLIOGRAPHY
